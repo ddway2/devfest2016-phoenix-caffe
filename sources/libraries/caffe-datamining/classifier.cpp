@@ -5,7 +5,8 @@ namespace devfest2016 {
 classifer::classifer(
     const std::string& model_file,
     const std::string& trained_file,
-    const std::string& mean_file
+    const std::string& mean_file,
+    const std::string& labels_file
 )
 {
     // Activate CPU Mode
@@ -18,7 +19,7 @@ classifer::classifer(
     load_mean(mean_file);
     
     // Load Label ?
-    
+    load_labels(labels_file);
 }
 
 
@@ -110,8 +111,6 @@ classifer::pre_process(const cv::Mat& img, channels_list_type& input_channels)
     cv::Mat sample_normalize;
     cv::subtract(sample_float, mean_, sample_normalize);
     cv::split(sample_normalize, input_channels);
-    
-    
 }
 
 void 
@@ -154,6 +153,16 @@ classifer::load_mean(const std::string& mean_file)
     auto channel_mean = cv::mean(mean);
     mean_ = cv::Mat(input_geometry_, mean.type(), channel_mean);
     
+}
+
+void 
+classifer::load_labels(const std::string& labels_file)
+{
+    std::ifstream ifs(labels_file.c_str());
+    std::string line;
+    while (std::getline(ifs, line)) {
+        labels_.emplace_back(line);
+    }
 }
     
 }   // namespace devfest2016

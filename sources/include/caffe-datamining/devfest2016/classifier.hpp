@@ -19,6 +19,7 @@ using namespace caffe;
 using prediction = std::pair<std::string, float>;
 using predictions_result = std::vector<prediction>;
 using channels_list_type = std::vector<cv::Mat>;
+using string_list_type = std::vector<std::string>;
 
 class CAFFE_DATAMINING_API classifer
 {
@@ -30,7 +31,8 @@ public:
     classifer(
         const std::string& model_file,
         const std::string& trained_file,
-        const std::string& mean_file
+        const std::string& mean_file,
+        const std::string& labels_file
     );
     
     predictions_result  classify(const std::string& imgfile);
@@ -46,8 +48,12 @@ private:
     
     void load_mean(const std::string& mean_file);
     
+    void load_labels(const std::string& labels_file);
+    
 private:
     network_ptr     net_;
+    
+    string_list_type    labels_;
     
     cv::Size input_geometry_;
     int num_channels_ = 0;
