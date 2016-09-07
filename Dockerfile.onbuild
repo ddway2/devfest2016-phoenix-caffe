@@ -1,0 +1,3 @@
+FROM ddway2/phoenix-onbuild
+
+CMD ["/usr/bin/server"]
