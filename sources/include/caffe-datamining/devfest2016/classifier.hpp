@@ -21,14 +21,14 @@ using predictions_result = std::vector<prediction>;
 using channels_list_type = std::vector<cv::Mat>;
 using string_list_type = std::vector<std::string>;
 
-class CAFFE_DATAMINING_API classifer
+class CAFFE_DATAMINING_API classifier
 {
 public:
     using network = Net<float>;
     using network_ptr = std::shared_ptr<network>;
     
 public:
-    classifer(
+    classifier(
         const std::string& model_file,
         const std::string& trained_file,
         const std::string& mean_file,

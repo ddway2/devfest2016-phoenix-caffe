@@ -2,7 +2,7 @@
 
 namespace devfest2016 {
     
-classifer::classifer(
+classifier::classifier(
     const std::string& model_file,
     const std::string& trained_file,
     const std::string& mean_file,
@@ -24,7 +24,7 @@ classifer::classifer(
 
 
 predictions_result  
-classifer::classify(const std::string& imgfile)
+classifier::classify(const std::string& imgfile)
 {
     cv::Mat img = cv::imread(imgfile.c_str(), -1);
     
@@ -36,7 +36,7 @@ classifer::classify(const std::string& imgfile)
 }
 
 std::vector<float>  
-classifer::predict(const cv::Mat& img)
+classifier::predict(const cv::Mat& img)
 {
     auto input_layer = net_->input_blobs()[0];
     input_layer->Reshape(1, num_channels_, 
@@ -60,7 +60,7 @@ classifer::predict(const cv::Mat& img)
 }
 
 void 
-classifer::wrap_input_layer(channels_list_type& input_channels)
+classifier::wrap_input_layer(channels_list_type& input_channels)
 {
     auto input_layer = net_->input_blobs()[0];
     
@@ -75,7 +75,7 @@ classifer::wrap_input_layer(channels_list_type& input_channels)
 }
 
 void 
-classifer::pre_process(const cv::Mat& img, channels_list_type& input_channels)
+classifier::pre_process(const cv::Mat& img, channels_list_type& input_channels)
 {
     // Convert image
     cv::Mat sample;
@@ -114,7 +114,7 @@ classifer::pre_process(const cv::Mat& img, channels_list_type& input_channels)
 }
 
 void 
-classifer::load_network(
+classifier::load_network(
     const std::string& model_file,
     const std::string& trained_file
 )
@@ -129,7 +129,7 @@ classifer::load_network(
 }
 
 void 
-classifer::load_mean(const std::string& mean_file)
+classifier::load_mean(const std::string& mean_file)
 {
     BlobProto blob_proto;
     ReadProtoFromBinaryFileOrDie(mean_file.c_str(), &blob_proto);
@@ -156,7 +156,7 @@ classifer::load_mean(const std::string& mean_file)
 }
 
 void 
-classifer::load_labels(const std::string& labels_file)
+classifier::load_labels(const std::string& labels_file)
 {
     std::ifstream ifs(labels_file.c_str());
     std::string line;
