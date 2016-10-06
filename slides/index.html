@@ -3,8 +3,9 @@
     <meta charset="utf-8">
     <title>C++ : The beast is Back</title>
     <link rel="stylesheet" href="css/reveal.css">
-	<link rel="stylesheet" href="css/theme/white.css" id="theme">
-    <link rel="stylesheet" href="lib/css/zenburn.css">
+	<link rel="stylesheet" href="css/theme/moon.css" id="theme">
+    <link rel="stylesheet" href="css/my_style.css">
+    <link rel="stylesheet" href="lib/css/zenburn.css"> 
 </head>
 <body>
 <div class="reveal">
@@ -43,6 +44,10 @@
             </ul>
         </section>
 
+        <section data-background="img/cpp-evolution-path.svg" data-state="img-center">
+
+        </section>
+
         <!-- Slide 3 -->
         <section data-markdown>
             <script type="text/template">
@@ -67,6 +72,8 @@
 <script>
 	// Required, even if empty.
 	Reveal.initialize({
+        width: 1280,
+        height: 1024,
         dependencies: [
             { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
             { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
