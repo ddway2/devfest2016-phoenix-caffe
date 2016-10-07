@@ -61,4 +61,6 @@ private:
     cv::Mat mean_;
 };
     
+using classifier_ptr = std::unique_ptr<classifier>;
+
 }   // namespace devfest2016
