@@ -13,16 +13,13 @@
         
         <!-- Slide 1 -->
         <section>
-            <h1>C++ : The Beast is back !!</h1>
+            <h1>C++</h1>
+            <h1>The Beast is back !!</h1>
                         
         </section>
         
         <!-- Slide C++ -->
         <!-- Historique C++ -->
-        <section>
-            <h3>C++ : un peu d'histoire</h3>
-        </section>
-
         <section>
             <h3>Au commencement : 1983</h3>
             <h4>C with Classes</h4>
@@ -114,7 +111,7 @@
 
         <section data-markdown>
             <script type="text/template">
-                ### auto à notre resousse
+                ### auto à notre secour...
                 ```cpp
                 struct foo {
                     std::string name;
@@ -131,9 +128,87 @@
             </script>
         </section>
 
-        <!-- Fonction lambda -->
+        <!-- Fonction lambda / haut niveau -->
         <section>
-            <h3>"Où sont les fonctions anonymes ?"</h3>
+            <h3>Idée reçu n°3</h3>
+            <h3>"C'est un langage limité bas niveau"</h3>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+                ### Fonction lambda
+                ...où comment faire des fonctions anonymes
+                ```cpp
+                auto f1 = [](const std::string& value) {
+                    std::cout << "value: " << value << std::endl;
+                };
+
+                f1("salut");
+
+                int i = 0;
+                auto f2 = [&i]() { ++i; };
+
+                f2();   
+                std::cout << "i = " << i << std::endl;      // i = 1
+
+                int j = 0;
+                auto f3 = [j]() {
+                    ++j;
+                    std::cout << "j = " << j << std::endl;  // j = 1
+                };
+
+                std::cout << "j = " << j << std::endl;     // j = 0
+                ```
+            </script>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+                ### Tuples
+                ...où comment jouer avec des structures simples
+                ```cpp
+                int n = 1;
+                auto t1 = std::make_tuple(10, "toto", n);
+
+                int value1, value3;
+                std::string value2;
+
+                std::tie(value1, value2, value3) = t1; 
+                ```
+            </script>
+        </section>
+
+        <!-- Librairies STL -->
+        <section>
+            <h3>Idée reçu n°4</h3>
+            <h3>"Il y a pas grand chose dans la librairie standard"</h3>
+        </section>
+
+        <section>
+            <h3>Le "standard" C++ :</h3>
+            <br/>
+            <h4><b>La bibliothèque STL</b></h4>
+            <p>
+                container, thread, filesystem, regexp, chrono, math,...
+            </p>
+            <br/>
+            <h4><b>La bibliothèque BOOST</b></h4>
+            <p>
+                le reste... (ASIO, GPU, coroutine, fiber, Date, graph, ...) 142 modules
+            </p>
+        </section>
+
+        <section>
+            Et bien sure : l'intégralité des bibliothèques C/C++ d'un système...
+        </section>
+
+        <!-- Petit exemple comparé -->
+        <section data-markdown>
+            <script type="text/template">
+                ```cpp
+                
+                ```
+            </script>
         </section>
     </div>
 </div>
@@ -145,6 +220,9 @@
 	Reveal.initialize({
         width: 1280,
         height: 1024,
+        minScale: 0.2,
+        maxScale: 1.0,
+        margin: 0.1,
         dependencies: [
             { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
             { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
