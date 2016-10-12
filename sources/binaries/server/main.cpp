@@ -30,7 +30,7 @@ int main(int argc, char** argv)
     auto mean_file = vm["mean_file"].as<std::string>();
     auto labels_file = vm["labels_file"].as<std::string>();
 
-    auto classifier = st::make_unique<devfest2016::classifier>(
+    auto classifier = std::make_unique<devfest2016::classifier>(
         model_file,
         trained_file,
         mean_file,
