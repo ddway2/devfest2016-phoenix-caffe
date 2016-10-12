@@ -28,11 +28,22 @@ public:
     virtual inline int MinTopBlobs() const          { return 1; }
 
     virtual void Reshape(const blob_vector_type& bottom, const blob_vector_type& top)
-    {}
+    {
+        top[0]->Reshape({100,1,32,32});
+    }
 
 protected:
     virtual void Forward_cpu(const blob_vector_type& bottom, const blob_vector_type& top)
-    {}
+    {
+        auto* top_data = top[0]->mutable_cpu_data();
+        const auto* bottom_data = bottom[0]->cpu_data();
+        auto img_count = bottom[0]->count(0);
+        auto data_count = bottom[0]->count(2,3);
+
+        for (auto img = 0 ; img < img_count ; ++img) {
+            top_data[img * ] = 
+        }
+    }
 
     virtual void Backward_cpu(
         const blob_vector_type&, 
