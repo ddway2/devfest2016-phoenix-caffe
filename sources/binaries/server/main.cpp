@@ -88,6 +88,9 @@ int main(int argc, char** argv)
                     std::cout << "Evaluate filename: " << f.second->GetTempFileName() << std::endl;
 
                     auto result = classifier->classify(f.second->GetTempFileName());
+                    std::sort(result.predictions.begin(), result.predictions.end(), [](const auto& a, const auto& b) { 
+                        return a.second > b.second;
+                    });
 
                     cxxu::rmfile(f.second->GetTempFileName());
                     rep << 
@@ -99,11 +102,6 @@ int main(int argc, char** argv)
         catch(MPFD::Exception& e)  {
             std::cerr << "Exception parser: " << e.GetError() << std::endl;
         }
-
-        rep 
-            << text_plain
-            << "File uploaded file size: " << data.size()
-            ; 
     };
 
     srv(make_endpoint(bind_addr, bind_port));
