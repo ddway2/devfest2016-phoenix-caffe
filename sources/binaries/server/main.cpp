@@ -64,7 +64,7 @@ int main(int argc, char** argv)
 
     httpd srv;
     MPFD::Parser  part_parser;
-    part_parser.SetTempDirForFileUpload("/tmp");
+    part_parser.SetTempDirForFileUpload("/src/tmp");
     part_parser.SetMaxCollectedDataLength(10*1024*1024);
 
     srv(GET) / "hello" = [&](const request& req, buffer& data, reply& rep) {
