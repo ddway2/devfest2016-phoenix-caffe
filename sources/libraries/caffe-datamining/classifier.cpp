@@ -1,7 +1,19 @@
 #include <devfest2016/classifier.hpp>
+#include <nx/nx.hpp>
 
 namespace devfest2016 {
-    
+
+auto result_serialization =
+    jsonv::formats_builder()
+        .type<prediction>()
+            .member("name", &prediction::first)
+            .member("prediction", &prediction::second)
+        .type<classifier_result>()
+            .member("predictions", &classifier_result::predictions)
+        .register_container<predictions_result>()
+        .check_references(jsonv::formats::defaults())
+    ;
+
 classifier::classifier(
     const std::string& model_file,
     const std::string& trained_file,
@@ -20,19 +32,22 @@ classifier::classifier(
     
     // Load Label ?
     load_labels(labels_file);
+
+    // Register JSON value
+    nx::add_json_format<classifier_result>(result_serialization);
 }
 
 
-predictions_result  
+classifier_result  
 classifier::classify(const std::string& imgfile)
 {
     cv::Mat img = cv::imread(imgfile.c_str(), -1);
     
     const auto output = predict(img);
-    predictions_result result;
+    classifier_result result;
     
     for (size_t i = 0 ; i < output.size() ; ++i) {
-        result.push_back(
+        result.predictions.push_back(
             std::make_pair(labels_[i], output[i])
         );
     }

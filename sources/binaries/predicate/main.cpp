@@ -63,12 +63,12 @@ int main(int argc, char** argv)
     ); 
 
     auto result = classifier->classify(file);
-    std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) { 
+    std::sort(result.predictions.begin(), result.predictions.end(), [](const auto& a, const auto& b) { 
         return a.second > b.second;
      });
 
     std::cout << "Result: " << std::endl;
-    for (const auto& r : result) {
+    for (const auto& r : result.predictions) {
         std::cout << r.first << ": " << std::fixed << std::setprecision(4) << r.second << std::endl;
     }
 

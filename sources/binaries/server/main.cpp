@@ -1,4 +1,5 @@
 #include <iostream>
+#include <caffe-datamining/system_config.hpp>
 #include <devfest2016/classifier.hpp>
 #include <devfest2016/signal.hpp>
 
@@ -6,6 +7,8 @@
 
 #include <nx/nx.hpp>
 #include <nx/multipart.hpp>
+
+#include <multipart/Parser.h>
 
 #include <regex>
 #include <mutex>
@@ -60,6 +63,9 @@ int main(int argc, char** argv)
     using namespace nx;
 
     httpd srv;
+    MPFD::Parser  part_parser;
+    part_parser.SetTempDirForFileUpload("/tmp");
+    part_parser.SetMaxCollectedDataLength(10*1024*1024);
 
     srv(GET) / "hello" = [&](const request& req, buffer& data, reply& rep) {
         rep 
@@ -69,6 +75,31 @@ int main(int argc, char** argv)
     };
 
     srv(POST) / "predict_from_file" = [&](const request& req, buffer& data, reply& rep) {
+        try {
+            auto content_type = req.h("Content-Type");
+            part_parser.SetContentType(content_type);
+            part_parser.AcceptSomeData(&(data[0]), data.size());
+            auto fields = part_parser.GetFieldsMap();
+       
+
+            for (const auto& f : fields)  {
+                
+                if (f.second->GetType() == MPFD::Field::FileType) {
+                    std::cout << "Evaluate filename: " << f.second->GetTempFileName() << std::endl;
+
+                    auto result = classifier->classify(f.second->GetTempFileName());
+
+                    cxxu::rmfile(f.second->GetTempFileName());
+                    rep << 
+                        nx::json(result)
+                        ;
+                }
+            }
+        }
+        catch(MPFD::Exception& e)  {
+            std::cerr << "Exception parser: " << e.GetError() << std::endl;
+        }
+
         rep 
             << text_plain
             << "File uploaded file size: " << data.size()

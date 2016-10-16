@@ -21,6 +21,10 @@ using predictions_result = std::vector<prediction>;
 using channels_list_type = std::vector<cv::Mat>;
 using string_list_type = std::vector<std::string>;
 
+struct classifier_result {
+    predictions_result      predictions;
+};
+
 class CAFFE_DATAMINING_API classifier
 {
 public:
@@ -35,7 +39,7 @@ public:
         const std::string& labels_file
     );
     
-    predictions_result  classify(const std::string& imgfile);
+    classifier_result  classify(const std::string& imgfile);
 private:
     std::vector<float>  predict(const cv::Mat& img);
     void wrap_input_layer(channels_list_type& input_channels);
