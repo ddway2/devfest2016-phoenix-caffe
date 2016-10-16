@@ -24,7 +24,6 @@ int main(int argc, char** argv)
 {
     caffe_datamining::system_config sc;
     auto share_dir = sc.share_dir();
-    std::cout << "Network definition files: " << share_dir << std::endl;
 
     po::options_description desc("Allowed options");
     desc.add_options()

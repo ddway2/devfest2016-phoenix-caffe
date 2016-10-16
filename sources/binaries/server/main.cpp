@@ -21,13 +21,16 @@ namespace std {
 
 int main(int argc, char** argv)
 {
+    caffe_datamining::system_config sc;
+    auto share_dir = sc.share_dir();
+
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help", "produce help message")
-        ("model_file", po::value<std::string>()->default_value(""), "Model file descriptor")
-        ("trained_file", po::value<std::string>()->default_value(""), "trained file")
-        ("mean_file", po::value<std::string>()->default_value(""), "Mean file")
-        ("labels_file", po::value<std::string>()->default_value(""), "Labels file")
+        ("model_file", po::value<std::string>()->default_value(share_dir + "/cifar10_quick.prototxt"), "Model file descriptor")
+        ("trained_file", po::value<std::string>()->default_value(share_dir + "/cifar10_quick_iter_5000.caffemodel.h5"), "trained file")
+        ("mean_file", po::value<std::string>()->default_value(share_dir + "/mean.binaryproto"), "Mean file")
+        ("labels_file", po::value<std::string>()->default_value(share_dir + "/batches.meta.txt"), "Labels file")
     ;
 
     po::variables_map vm;
@@ -47,12 +50,12 @@ int main(int argc, char** argv)
     std::string bind_addr = "0.0.0.0";
     uint16_t    bind_port = 8081;
 
-    // auto classifier = std::make_unique<devfest2016::classifier>(
-    //     model_file,
-    //     trained_file,
-    //     mean_file,
-    //     labels_file
-    // ); 
+    auto classifier = std::make_unique<devfest2016::classifier>(
+        model_file,
+        trained_file,
+        mean_file,
+        labels_file
+    ); 
 
     using namespace nx;
 
