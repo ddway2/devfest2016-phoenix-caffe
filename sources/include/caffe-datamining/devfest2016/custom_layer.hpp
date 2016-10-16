@@ -36,14 +36,14 @@ public:
 protected:
     virtual void Forward_cpu(const blob_vector_type& bottom, const blob_vector_type& top)
     {
-        auto* top_data = top[0]->mutable_cpu_data();
-        const auto* bottom_data = bottom[0]->cpu_data();
-        const auto img_count = bottom[0]->shape(0);
-        const auto data_count = bottom[0]->count(2);
+        // auto* top_data = top[0]->mutable_cpu_data();
+        // const auto* bottom_data = bottom[0]->cpu_data();
+        // const auto img_count = bottom[0]->shape(0);
+        // const auto data_count = bottom[0]->count(2);
 
-        for (auto img = 0 ; img < img_count ; ++img) {
-            top_data[img * ] = 
-        }
+        // for (auto img = 0 ; img < img_count ; ++img) {
+        //     top_data[img * ] = 
+        // }
     }
 
     virtual void Backward_cpu(

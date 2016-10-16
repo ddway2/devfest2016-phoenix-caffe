@@ -1,4 +1,5 @@
 #include <iostream>
+#include <caffe-datamining/system_config.hpp>
 #include <devfest2016/classifier.hpp>
 #include <devfest2016/signal.hpp>
 
@@ -21,13 +22,18 @@ namespace std {
 
 int main(int argc, char** argv)
 {
+    caffe_datamining::system_config sc;
+    auto share_dir = sc.share_dir();
+    std::cout << "Network definition files: " << share_dir << std::endl;
+
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help", "produce help message")
-        ("model_file", po::value<std::string>()->default_value(""), "Model file descriptor")
-        ("trained_file", po::value<std::string>()->default_value(""), "trained file")
-        ("mean_file", po::value<std::string>()->default_value(""), "Mean file")
-        ("labels_file", po::value<std::string>()->default_value(""), "Labels file")
+        ("model_file", po::value<std::string>()->default_value(share_dir + "/cifar10_quick.prototxt"), "Model file descriptor")
+        ("trained_file", po::value<std::string>()->default_value(share_dir + "/cifar10_quick_iter_5000.caffemodel.h5"), "trained file")
+        ("mean_file", po::value<std::string>()->default_value(share_dir + "/mean.binaryproto"), "Mean file")
+        ("labels_file", po::value<std::string>()->default_value(share_dir + "/batches.meta.txt"), "Labels file")
+        ("file", po::value<std::string>()->default_value(""), "Image file to parse")
     ;
 
     po::variables_map vm;
@@ -44,13 +50,28 @@ int main(int argc, char** argv)
     auto mean_file = vm["mean_file"].as<std::string>();
     auto labels_file = vm["labels_file"].as<std::string>();
 
+    auto file = vm["file"].as<std::string>();
+    if (file.empty() || !cxxu::exists(file)) {
+        std::cerr << "Not file " << file << " found";
+        std::exit(1);
+    }
 
-    // auto classifier = std::make_unique<devfest2016::classifier>(
-    //     model_file,
-    //     trained_file,
-    //     mean_file,
-    //     labels_file
-    // ); 
+    auto classifier = std::make_unique<devfest2016::classifier>(
+         model_file,
+         trained_file,
+         mean_file,
+         labels_file
+    ); 
+
+    auto result = classifier->classify(file);
+    std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) { 
+        return a.second > b.second;
+     });
+
+    std::cout << "Result: " << std::endl;
+    for (const auto& r : result) {
+        std::cout << r.first << ": " << std::fixed << std::setprecision(4) << r.second << std::endl;
+    }
 
     std::exit(0);
 }

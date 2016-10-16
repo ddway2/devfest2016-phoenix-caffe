@@ -66,28 +66,6 @@ int main(int argc, char** argv)
     };
 
     srv(POST) / "predict_from_file" = [&](const request& req, buffer& data, reply& rep) {
-        std::ofstream of("/tmp/uploaded_file.png");
-        of << data;
-        of.close();
-        
-        const auto& value = req.h("Content-Type");
-        std::cout << "Content type: " << value << std::endl;
-        auto check = cxxu::split("[[:space:]]*;[[:space:]]*", value);
-        
-        auto bound = cxxu::split("=", check[1])[1];
-        std::cout << "Bound : " << bound << std::endl;
-
-        multipart_parser multi_parse{bound};
-        multi_parse(&data[0], data.size());
-
-        const auto& pt = multi_parse.get();
-        std::cout << "part: " << pt.size() << std::endl;
-        for (const auto& v : pt) {
-            std::cout << "name: " << v.name << std::endl;
-            std::cout << "filename: " << v.filename << std::endl;
-            std::cout << "value size: " << v.value.size() << std::endl;
-        }
-
         rep 
             << text_plain
             << "File uploaded file size: " << data.size()

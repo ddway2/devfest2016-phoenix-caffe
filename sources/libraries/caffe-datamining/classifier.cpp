@@ -28,9 +28,14 @@ classifier::classify(const std::string& imgfile)
 {
     cv::Mat img = cv::imread(imgfile.c_str(), -1);
     
-    auto output = predict(img);
+    const auto output = predict(img);
     predictions_result result;
     
+    for (size_t i = 0 ; i < output.size() ; ++i) {
+        result.push_back(
+            std::make_pair(labels_[i], output[i])
+        );
+    }
     
     return result;
 }
