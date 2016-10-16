@@ -44,8 +44,6 @@ int main(int argc, char** argv)
     auto mean_file = vm["mean_file"].as<std::string>();
     auto labels_file = vm["labels_file"].as<std::string>();
 
-    std::string bind_addr = "0.0.0.0";
-    uint16_t    bind_port = 8081;
 
     // auto classifier = std::make_unique<devfest2016::classifier>(
     //     model_file,
@@ -54,51 +52,5 @@ int main(int argc, char** argv)
     //     labels_file
     // ); 
 
-    using namespace nx;
-
-    httpd srv;
-
-    srv(GET) / "hello" = [&](const request& req, buffer& data, reply& rep) {
-        rep 
-            << text_plain
-            << "Hello World"
-            ; 
-    };
-
-    srv(POST) / "predict_from_file" = [&](const request& req, buffer& data, reply& rep) {
-        std::ofstream of("/tmp/uploaded_file.png");
-        of << data;
-        of.close();
-        
-        const auto& value = req.h("Content-Type");
-        std::cout << "Content type: " << value << std::endl;
-        auto check = cxxu::split("[[:space:]]*;[[:space:]]*", value);
-        
-        auto bound = cxxu::split("=", check[1])[1];
-        std::cout << "Bound : " << bound << std::endl;
-
-        multipart_parser multi_parse{bound};
-        multi_parse(&data[0], data.size());
-
-        const auto& pt = multi_parse.get();
-        std::cout << "part: " << pt.size() << std::endl;
-        for (const auto& v : pt) {
-            std::cout << "name: " << v.name << std::endl;
-            std::cout << "filename: " << v.filename << std::endl;
-            std::cout << "value size: " << v.value.size() << std::endl;
-        }
-
-        rep 
-            << text_plain
-            << "File uploaded file size: " << data.size()
-            ; 
-    };
-
-    srv(make_endpoint(bind_addr, bind_port));
-    std::cout << "Serve at " << bind_addr << ":" << bind_port << std::endl;
-
-    devfest2016::signal sig;
-    sig();
-    
     std::exit(0);
 }
