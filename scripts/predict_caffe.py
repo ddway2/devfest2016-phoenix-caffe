@@ -10,7 +10,7 @@ from flask import request
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = '/tmp'
 
-caffe_root = '/home/pierrot/projects/caffe/build/install'
+caffe_root = '/usr'
 sys.path.insert(0, caffe_root + '/python')
 
 import caffe
@@ -45,8 +45,7 @@ def predict_from_file():
 	file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	
 	x   = net.predict( [ caffe.io.load_image(file) ])
-	print(x)
 	return json.dumps(x.tolist())
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
