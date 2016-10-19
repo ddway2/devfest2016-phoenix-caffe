@@ -57,8 +57,7 @@
         <section>
             <h2>Au commencement : 1983</h2>
             <h3>C with Classes</h3>
-            <br/>
-            <div>
+            <div style="margin-top: 100px;">
                 <img class="plain" src="img/220px-BjarneStroustrup.jpg"/>
                 <h6>Bjarne Stroustrup</h6>
             </div>
@@ -66,6 +65,9 @@
         
         <section>
             <h2>1998 : standard ISO</h2>
+            <div style="margin-top: 100px">
+                <img class="plain" src="img/iso_logo.gif"/>
+            </div>
         </section>
 
         <section>
@@ -74,11 +76,13 @@
 
         <section>
             <h2>2011 - 2014 : Le renouveau</h2>
-            <ul>
-                <li>Le langage C++</li>
-                <li>La bibliothèque Standard (STL)</li>
-                <li>La bibliothèque boost</li>
-            </ul>
+            <div style="margin-top: 100px">
+                <ul>
+                    <li>Le langage C++</li>
+                    <li>La bibliothèque Standard (STL)</li>
+                    <li>La bibliothèque boost</li>
+                </ul>
+            </div>
         </section>
 
         <section>
@@ -106,12 +110,14 @@
 
                 delete b;
                 ```
+                Ce n'est pas des plus pratiques...
             </script>
         </section>
 
         <section data-markdown>
             <script type="text/template">
                 ### Smart Pointer
+                Le pointeur partagé
                 ```cpp
                 #include <memory>
 
@@ -123,10 +129,44 @@
             </script>
         </section>
 
+        <section data-markdown>
+            <script type="text/template">
+                Passage par valeur vs passage par référence vs ...
+                ```cpp
+                #include <memory>
+                buffer buf;
+
+                void f1(buffer b);        // Passage par valeur
+                void f2(buffer& b);       // Passage par référence
+
+                f1(buf);            // Copie complète de l'objet buf
+                f2(buf);            // Passage de l'adresse de buf
+                ```
+
+            </script>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+                ### Move Semantic
+                ...ou comment gérer la vie d'une variable
+                ```cpp
+                #include <memory>
+
+                buffer buf;
+
+                void f3(buffer&& b);    // Passage par rvalue 
+
+                f3(std::move(buf));     // La gestion de l'objet est passé à f3
+                ```
+            </script>
+        </section>
+
         <!-- Mot clé auto -->
         <section>
             <h3>Idée reçu n°2</h3>
-            <h3>"Il y a des déclarations de type partout ! Sans IDE c'est trop dure'"
+            <h3>"Il y a des déclarations de type partout ! </h3>
+            <h3>Sans IDE c'est trop dure'"</h3>
         </section>
 
         <section data-markdown>
@@ -150,7 +190,7 @@
 
         <section data-markdown>
             <script type="text/template">
-                ### auto à notre secour...
+                ### Le mot clé auto à la rescousse...
                 ```cpp
                 struct foo {
                     std::string name;
@@ -170,7 +210,7 @@
         <!-- Fonction lambda / haut niveau -->
         <section>
             <h3>Idée reçu n°3</h3>
-            <h3>"C'est un langage limité bas niveau"</h3>
+            <h3>"C'est un langage limité et bas niveau"</h3>
         </section>
 
         <section data-markdown>
@@ -178,11 +218,9 @@
                 ### Fonction lambda
                 ...où comment faire des fonctions anonymes
                 ```cpp
-                auto f1 = [](const std::string& value) {
+                auto f1 = [](int value) {
                     std::cout << "value: " << value << std::endl;
                 };
-
-                f1("salut");
 
                 int i = 0;
                 auto f2 = [&i]() { ++i; };
@@ -231,14 +269,24 @@
                 container, thread, filesystem, regexp, chrono, math,...
             </p>
             <br/>
-            <h4><b>La bibliothèque BOOST</b></h4><img src="img/boost-c-logo.jpg"/>
+            <h4><b>La bibliothèque BOOST</b></h4>
             <p>
                 le reste... (ASIO, GPU, coroutine, fiber, Date, graph, ...) 142 modules
             </p>
         </section>
 
         <section>
-            Et aussi : l'intégralité des bibliothèques C/C++ existente
+            <h3>Et aussi : l'intégralité des bibliothèques C/C++</h3>
+            <img style="border: none; margin-top: 100px;" src="img/613445810_2249c2d193_z.jpg"/>
+        </section>
+
+        <section>
+            <h3>Quelques exemples</h3>
+            <ul style="margin-top: 80px">
+                <li>Expandium NX - Framework HTTP asynchrone</li>
+                <li>Facebook Wangle - Framework réseau</li>
+                <li>Facebook Folly - Collection d'utilitaire</li>
+            </ul>
         </section>
 
         <section>
@@ -247,19 +295,17 @@
         </section>
 
         <!-- Petit exemple comparé -->
-        <section data-markdown>
-            <script type="text/template">
-                ```cpp
-
-                ```
-            </script>
+        <section>
+            <h3>Un petit exemple</h3>
         </section>
 
         <!-- Phoenix -->
         <section>
             <h2><b>Phoenix</b></h2>
-            <p>ou comment faire du C++ aujourd'hui</p>
-            <img class="plain" width="30%" height="30%" src="img/phoenix.png"/>
+            <p>comment faire du C++ aujourd'hui</p>
+            <div style="margin-top: 100px">
+                <img class="plain" width="30%" height="30%" src="img/phoenix.png"/>
+            </div>
         </section>
 
         <section data-markdown>
@@ -274,12 +320,21 @@
 
         <section data-markdown>
             <script type="text/template">
-                ### exemple d'utilisation
+                ### Exemple d'utilisation
 
                 ```bash
                 phoenix-bootstrap
+                phoenix-build configure
+                phoenix-build build
+                phoenix-build install
+                phoenix-build run
                 ```
             </script>
+        </section>
+
+        <!-- Exemple concret -->
+        <section>
+
         </section>
     </div>
 </div>
