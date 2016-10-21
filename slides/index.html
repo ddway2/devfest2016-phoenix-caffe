@@ -27,7 +27,7 @@
                     <li>10 ans d'expérience</li>
                     <li>Monitoring passif du coeur de réseau d'opérateurs télécom</li>
                     <li>Les opérateurs mobiles et les entreprises de chemain de fer (GSM-R)</li>
-                    <li>Analyse Business Intelligence</li>
+                    <li>Analyse Business / Intelligence</li>
                 </ul>
             </div>
         </section>
@@ -41,7 +41,11 @@
         <section>
             <h3>Qui sommes-nous ?</h3>
             <h4>Nicolas Greffard</h4>
-            TODO: remplir son petit laïus
+                <ul>
+                <li>Data Scientist</li>
+                <li>Machine Learning / Analytics</li>
+                </ul>
+                <img src = "img/data_science_venn.png" alt = "data_science_venn">
         </section>
 
         <section>
@@ -321,7 +325,6 @@
         <section data-markdown>
             <script type="text/template">
                 ### Exemple d'utilisation
-
                 ```bash
                 phoenix-bootstrap
                 phoenix-build configure
@@ -334,8 +337,227 @@
 
         <!-- Exemple concret -->
         <section>
-
+		TODO
         </section>
+
+        <section>
+            <h3>Problématiques data ?</h3>
+            <ul>
+                <li><strike>$ Learn from the past to predict the future</strike></li>
+                <li>No BS : essayer d'aller au delà des KPIs</li>
+                <li>Ex: #dropped calls => churn probability</li>
+                <li>#calls + #calls_fhz => fraudeur</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>Données sensibles</h3>
+            <h4>Prenons un exemple classique</h4>
+            <ul>
+                <li>Classification: <b>étiqueter</b>/labelliser des objets (données) comme appartenant à une catégorie parmi plusieurs</li>
+                <li>Ex : un utilisateur satisfait ou non; une image comme étant un visage ou un poisson</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>Classification supervisée</h3>
+            <h4>Le modèle apprend à discriminer les catégories à partir de données déjà étiquetées. C'est la phase d'apprentissage</h4>
+        </section>
+
+        <section>
+            <h3>Apprentissage</h3>
+            <img src = "img/training.png" alt = "training">
+        </section>
+
+        <section>
+            <h3>Classification supervisée</h3>
+            <h4>Une fois le modèle obtenu, on lui envoie des images non étiquetées et il prédit l'étiquette correspondant</h4>
+        </section>
+
+        <section>
+            <h3>Prédictions</h3>
+            <img src = "img/testing.png" alt = "training">
+        </section>
+
+        <section>
+            <h3>Webservice de classification d'images</h3>
+            <h4>C++ versus Python</h4>
+        </section>
+
+        <section>
+            <h3>CIFAR10</h3>
+            <img src="img/cifar10.png" alt = "cifar10">
+            <h3>Deep learning : CNN (réseau neuronale convolutif)</h3>
+            <h3>Derrière un serveur http qui reçoit des images et qui renvoie ce qu'elles représentent</h3>
+        </section>
+
+        <section>
+            <h3>Réseau neuronale convolutif</h3>
+            <ul>
+                <li><b>Inspiré</b> du fonctionnement du cerveau humain</li>
+                <li>...</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>Lib : Caffe</h3>
+            <ul>
+                <li>Développé en C++ avec wrapper python </li>
+                <li>Comme la majorité des solutions...</li>
+                <li>La définition du modèle se fait via fichier de config</li>
+            </ul>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+                ### Http serveur python
+                Du classique : Flask
+                ```python
+                import sys
+                
+                import cPickle as pickle
+                import numpy as np
+                import caffe
+                
+                import json 
+                from PIL import Image
+                
+                from flask import Flask
+                from flask import request
+                app = Flask(__name__)
+
+
+                def loadNet():
+                    blob = caffe.proto.caffe_pb2.BlobProto()
+                    data = open( '../../caffe/examples/cifar10/mean.binaryproto' , 'rb' ).read()
+                    blob.ParseFromString(data)
+                    arr = np.array( caffe.io.blobproto_to_array(blob) )
+                    net = caffe.Classifier('../../caffe/examples/cifar10/cifar10_quick.prototxt', \
+                    '../../caffe/examples/cifar10/cifar10_quick_iter_5000.caffemodel.h5',\
+                    image_dims=(32, 32), mean=arr[0],raw_scale=255)
+
+                    return(net)
+
+
+                @app.route("/predict_from_file", methods=['GET', 'POST'])
+                def test():
+                    net = loadNet()
+                    x   = net.predict( [ caffe.io.load_image('../../caffe/examples/images/cat.jpg') ])
+                    return json.dumps(x.tolist())
+
+                @app.route("/predict_one", methods = ['GET', 'POST'])
+                def predict_one():
+                    img = json.loads(request.json)
+                    net = loadNet()
+                    x   = net.predict( [ caffe.io.load_image(img) ])
+                    print(img)
+                    print(x)
+                    return json.dumps(x.tolist())
+
+                if __name__ == "__main__":
+                    app.run() 
+                ```
+            </script>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+                ### Http serveur C++
+                ```cpp
+                    int main(){
+                        auto proutprout;
+                    }
+
+                ```
+            </script>
+        </section>
+
+        <section>
+            <h3>Et les perfs ?</h3>
+            <ul>
+                <li>Python+Caffe+Flask : 30req/s</li>
+                <li>Cpp+Caffe+Nx : 60 req/s</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>Et si on veut étendre Caffe ?</h3>
+            <ul>
+                <li>Besoin spécifique : eg: layer custom</li>
+                <li>Layer jouet : transforme les images RGB en Grayscale</li>
+            </ul>
+        </section>
+
+
+        <section data-markdown>
+            <script type="text/template">
+                ### layer python
+                Gray = R*0.2989+G*0.5870+B*0.1140
+                ```python
+                import caffe
+                import numpy as np
+
+                class ColorConvertLayer(caffe.Layer):
+
+                    def setup(self, bottom, top):
+                        pass
+
+                    def reshape(self, bottom, top):
+                        top[0].reshape(100,1,32,32)
+                        
+
+                    def forward(self, bottom, top):
+                        top[0].data[:,0,...] = (bottom[0].data[:,0,...] * 0.2989) + (bottom[0].data[:,1,...] * 0.5870) + (bottom[0].data[:,2,...]*0.1140) 
+
+
+                    def backward(self, top, propagate_down, bottom):
+                        pass
+
+ 
+                ```
+            </script>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+                ### layer cpp
+                Gray = R*0.2989+G*0.5870+B*0.1140
+                ```cpp
+                namespace caffe {
+
+                void 
+                GrayLayer<Dtype>::Reshape(const blob_vector_type& bottom, const blob_vector_type& top)
+                {
+                    // TODO reshape (i dont understand)
+                }
+
+                template<typename Dtype>
+                void 
+                GrayLayer<Dtype>::Forward_cpu(const blob_vector_type& bottom, const blob_vector_type& top)
+                {
+                    for (size_t i = 0 ; i < top.size() ; ++i) {
+                        //top[i]->SharedData();
+                     }
+                }
+
+                INSTANTIATE_CLASS(GrayLayer);
+                REGISTER_LAYER_CLASS(Gray);
+
+                }   // namespace caffe
+ 
+                ```
+            </script>
+        </section>
+
+        <section>
+            <h3>Coût de l'overhead python ?</h3>
+            <ul>
+                <li>Apprentissage sans layer custom : XXX secs</li>
+                <li>Apprentissage avec layer python : XXX secs</li>
+                <li>Apprentissage avec layer cpp    : XXX secs</li>
+            </ul>
+        </section>
+
     </div>
 </div>
 <script src="lib/js/head.min.js"></script>
