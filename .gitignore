@@ -1,5 +1,6 @@
 **/CMakeList.txt
 **/browse.VC.db
+**/.vscode
 # CBUILD_GITIGNORE BEGIN
 .cbuild
 build
