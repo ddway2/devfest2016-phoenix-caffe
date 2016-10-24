@@ -64,13 +64,15 @@
 
         <section>
             <h2>Pourquoi les technologies C++ ?</h2>
+            <aside class="notes">
+                <ul>
+                <li>Performance</li>
+                <li>Compétence</li>
+                <li>Haut niveau / Matos</li>
+                <li>Librairie existante</li>
+                </ul>
+            </aside>
         </section>
-        <!--
-            * Performance
-            * Compétence
-            * Haut niveau / Matos
-            * Librairie existante
-            -->
 
         <!-- Slide C++ -->
         <!-- Historique C++ -->
@@ -110,6 +112,10 @@
         </section>
 
         <!-- Présentation des nouveauté -->
+        <section>
+            <h2>Luttons contre les idées reçus</h2>
+        </section>
+
         <!-- Idée reçu n°1 -->
         <section>
             <h3>Idée reçu n°1 : <h3>
@@ -118,17 +124,17 @@
 
         <section data-markdown>
             <script type="text/template">
-                ### Souvenir, souvenir...
+                L'envoi d'un paquet sur le réseau
                 ```cpp
-                struct buffer {
+                struct network_packet {
                     uint8_t   value[65536];
                 };
 
-                buffer* b = new buffer();
+                network_packet* pkt = new network_packet();
                 
-                ...
+                ... traitement / envoi
 
-                delete b;
+                delete pkt;
                 ```
                 Ce n'est pas des plus pratiques...
             </script>
@@ -141,30 +147,47 @@
                 ```cpp
                 #include <memory>
 
-                using buffer_ptr = std::shared_ptr<buffer>;
-                buffer_ptr b = std::make_shared<buffer>();
+                std::shared_ptr<network_packet> b = std::make_shared<network_packet>();
 
                 /// Live your life b variable...
                 ```
             </script>
         </section>
 
+        <section>
+            <h3>Idée reçu n°2 : <h3>
+            <h3>""</h3>
+        </section>
+
         <section data-markdown>
             <script type="text/template">
-                Passage par valeur vs passage par référence vs ...
+                Passage par valeur
                 ```cpp
-                #include <memory>
-                buffer b;
+                void send(network_packet p) { ... }     // Passage par valeur
 
-                void f1(buffer bf);        // Passage par valeur
-                void f2(buffer& bf);       // Passage par référence
+                void loop() {
+                    network_packet pkt;
 
-                f1(b);            // Copie complète de l'objet buf
-                f2(b);            // Passage de l'adresse de buf
+                    send(pkt);                          // Copie de l'objet (64Ko à chaque appel !!)
+                }
                 ```
 
             </script>
-            <!--  -->
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+                Passage par référence
+                ```cpp
+                void send(network_packet& p) { ... }     // Passage par référence
+
+                void loop() {
+                    network_packet pkt;
+
+                    send(pkt);                          // seul une référence vers l'objet est passée 
+                }
+                ```
+            </script>
         </section>
 
         <section data-markdown>
@@ -173,38 +196,58 @@
                 ### Move Semantic
                 ...ou comment gérer la vie d'une variable
                 ```cpp
-                #include <memory>
+                void send(network_packet&& p) { ... }     // Passage par rvalue
 
-                buffer b;
+                void loop() {
+                    network_packet pkt;
 
-                void send_to(buffer&& b);    // Passage par rvalue 
-
-                send_to(std::move(b));          // La gestion de l'objet est passé à f3
+                    send(std::move(pkt));                // Le control de l'objet pkt passe à la fonction send 
+                }
                 ```
             </script>
         </section>
 
         <!-- Mot clé auto -->
         <section>
-            <h3>Idée reçu n°2</h3>
+            <h3>Idée reçu n°3</h3>
             <h3>"Il y a des déclarations de type partout ! </h3>
             <h3>Sans IDE c'est trop dure'"</h3>
         </section>
 
         <section data-markdown>
             <script type="text/template">
-                ### Rechercher un élément dans un hash
+                ### Rechercher de l'instance d'un serveur
                 ```cpp
-                struct foo {
+                struct server {
                     std::string name;
-                    int id;
+                    int socket;
                 };
 
-                std::map<std::string, foo>  my_hash;
+                std::map<std::string, server>  server_pool;
                 
                 ...
 
-                std::map<std::string, foo>::iterator found = my_hash.find("toto");
+                std::map<std::string, foo>::iterator found = server_pool.find("toto");
+                std::string my_name = found->second.name;
+                ```
+            </script>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+                On peut toujours utilisé un typedef
+                ```cpp
+                struct server {
+                    std::string name;
+                    int socket;
+                };
+
+                typedef std::map<std::string, server> server_pool_type;
+                server_pool_type  server_pool;
+                
+                ...
+
+                server_pool_type::iterator found = server_pool.find("toto");
                 std::string my_name = found->second.name;
                 ```
             </script>
@@ -214,16 +257,16 @@
             <script type="text/template">
                 ### Le mot clé auto à la rescousse...
                 ```cpp
-                struct foo {
+                struct server {
                     std::string name;
-                    int id;
+                    int socket;
                 };
 
-                std::map<std::string, foo>  my_hash;
-
+                std::map<std::string, server>  server_pool;
+                
                 ...
 
-                auto found = my_hash.find("toto");
+                auto found = server_pool.find("toto");
                 auto my_name = found->second.name;
                 ```
             </script>
@@ -231,7 +274,7 @@
 
         <!-- Fonction lambda / haut niveau -->
         <section>
-            <h3>Idée reçu n°3</h3>
+            <h3>Idée reçu n°4</h3>
             <h3>"C'est un langage limité et bas niveau"</h3>
         </section>
 
@@ -281,7 +324,7 @@
 
         <!-- Librairies STL -->
         <section>
-            <h3>Idée reçu n°4</h3>
+            <h3>Idée reçu n°5</h3>
             <h3>"Il y a pas grand chose dans la librairie standard"</h3>
         </section>
 
