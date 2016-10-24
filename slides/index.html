@@ -533,10 +533,7 @@
                 from flask import request
                 app = Flask(__name__)
                 app.config['UPLOAD_FOLDER'] = '/tmp'
-
-                caffe_root = '/usr'
-                sys.path.insert(0, caffe_root + '/python')
-
+        
                 import caffe
 
                 def loadNet():
