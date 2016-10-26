@@ -183,12 +183,12 @@
 
         <section data-markdown>
             <script type="text/template">
-                Zoomons sur la partie d'envoie de paquet
+                Focus sur la partie d'envoi de paquet
                 ```cpp
                 class server_tcp {
                 public:
                     struct packet {
-                        uint64_t        req_id;
+                        uint64_t        id;
                         uint8_t         data[25_mo];
                         // ...
                     };
@@ -256,15 +256,18 @@
             </script>
             <aside class="notes">
                 Mot-clé: responsabilité de la variable
-                Exemple : send est une fonction multi thread
+                Exemple : send est une fonction multi thread asynchrone
             </aside>
         </section>
 
         <!-- Mot clé auto -->
         <section>
             <h3>Idée reçu n°2</h3>
-            <h3>"Il y a des déclarations de type partout ! </h3>
+            <h3>"Il y a du typage partout ! </h3>
             <h3>Sans IDE c'est trop dure'"</h3>
+            <aside class="notes">
+                Parler du typage fort du C++
+            </aside>
         </section>
 
         <section data-markdown>
@@ -350,7 +353,7 @@
             <!-- Reflechir à un cas concret basé sur les callbacks -->
             <!--  Parler de la façon "traditionnelle" de faire des fonctions -->
             <script type="text/template">
-                Séquencement d'un serveur
+                Exemple : gestion des réponses
                 ```cpp
                 class response_interface {
                 public:
@@ -449,13 +452,13 @@
                     uint64_t        value = 0;
                 };
 
-                size_value operator ""_ko(unsigned long long int v) {
+                constexpr size_value operator ""_ko(unsigned long long int v) {
                     size_value result;
                     result.value = v * 1024 * 1024;
                     return result;
                 }
 
-                size_value operator ""_mo(unsigned long long int v) {
+                constexpr size_value operator ""_mo(unsigned long long int v) {
                     size_value result;
                     result.value = v * 1024;
                     return result;
@@ -477,7 +480,7 @@
             <br/>
             <h4><b>La bibliothèque STL</b></h4>
             <p>
-                container, thread, filesystem, regexp, chrono, math,...
+                container, algorithme, thread, filesystem, regexp, chrono, math,...
             </p>
             <br/>
             <h4><b>La bibliothèque BOOST</b></h4>
@@ -494,10 +497,10 @@
         <section data-markdown>
             <script type="text/template">
                 ### Quelques exemples:
-                * Expandium NX - Framework HTTP asynchrone
-                * Facebook Wangle - Framework réseau
+                * Expandium NX - Librairie HTTP asynchrone
+                * Facebook Wangle - Librairie réseau
                 * Facebook Folly - Collection d'utilitaire
-                * Librairie Cloud (HDFS MapR)
+                * Librairie Cloud (MapR)
                 * ...
             </script>
         </section>
@@ -505,13 +508,16 @@
         <section>
             <h3>Et ce n'est qu'un aperçu</h3>
             <img class="plain" src="img/C-11-CPP-11-features.png"/>
+            <aside class="notes">
+                Ouvrir sur le sujet : commet faire du C++ aujourd'hui
+            </aside>
         </section>
 
         <!-- Phoenix -->
         <section>
             <h3>Comment faire du C++ aujourd'hui ?</h3>
             <aside class="notes">
-                parler des problèmes de build
+                parler des problèmes de build - exemple avec Makefile et cmake
             </aside>
         </section>
 
@@ -520,32 +526,39 @@
             <div style="margin-top: 100px">
                 <img class="plain" width="30%" height="30%" src="img/phoenix.png"/>
             </div>
+            <aside class="notes">
+                POC mis en place pour concurrence le Go et mettre au gout du jour le C++
+            </aside>
         </section>
 
         <section data-markdown>
             <script type="text/template">
-                ### Toolchain de build
+                ### Concepts
 
-                * Pour gérer un projet C++
-                * Pour gérer ses dépendances de build
+                * Gérer un projet C++
+                * Gérer ses dépendances de build sans déclarations
                 * "Multi plateforme" -> Utilisation de docker
                 * Génération d'image utilisable dans un cloud
             </script>
         </section>
 
-        <section data-markdown>
-            <script type="text/template">
-                ### Exemple d'utilisation
-                Créer un projet
-                ```bash
-                phoenix-bootstrap
-                ```
-            </script>
+        <section>
+            <a align="left"><h3>Solution</h3>
+            <p>L'assemblage de 3 technologies</p>
+            </a>
+            <img src="img/photo-docker.jpg" width="30%" style="float: right; border: none;"/>
+            <div class="ulist">
+                <ul style="width: 60%">
+                    <li>Docker</li>
+                    <li>Debian apt</li>
+                    <li>cbuild (Remy Chibois)</li>
+                </ul>
+            </div>
         </section>
 
         <section data-markdown>
             <script type="text/template">
-            ### Un projet phoenix
+            ### Un projet phoenix ?
             Un fichier de description : cbuild.conf
             ```bash
             PKG_VER=1.0
@@ -565,9 +578,10 @@
 
         <section data-markdown>
              <script type="text/template">
-             ### Un projet phoenix
+             ### Un projet phoenix ?
              Une arboresence
              ```bash
+my-project
 ├── sources
 │   ├── binaries
 │   │   ├── predicate
@@ -588,9 +602,23 @@
              </script>
         </section>
 
+        <section data-markdown>
+            <script type="text/template">
+            Et quelques commandes...
+            ```bash
+            phoenix-build configure
+            phoenix-build install
+            phoenix-build run
+
+            phoenix-build image
+            ```
+            That All...
+            </script>
+        </section>
+
         <!-- Petit exemple comparé -->
         <section>
-            <h3>Un petit exemple d'utilisation</h3>
+            <h3>Un petit exemple d'utilisation concret</h3>
         </section>
 
         <section>
