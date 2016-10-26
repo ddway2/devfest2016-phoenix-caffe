@@ -3,3 +3,6 @@ html.img-center div.slide-background.present {
     background-size: 90%;
 }
 
+.reveal pre code {
+    max-height: 80%;
+}
