@@ -112,24 +112,42 @@
         <!-- Idée reçu n°1 -->
         <section>
             <h3>Idée reçu n°1 : <h3>
-            <h3>"Il n'y a pas de Garbage Collector : il faut gérer soi même la mémoire"</h3>
+            <h3>"Il n'y a pas de Garbage Collector : il faut gérer soi même la mémoire et les objets"</h3>
+            <aside class="notes">
+                Définition du petit projet : un service dans le cloud qui échange des messages
+            </aside>
         </section>
 
         <section data-markdown>
             <script type="text/template">
-                L'envoi d'un paquet sur le réseau
+                Un pool de serveur TCP
                 ```cpp
-                struct network_packet {
-                    uint8_t   value[65536];
+                class server_tcp {
+                public:
+                    uint32_t    id;
+                    socket      sock;
+                    // ... 
                 };
 
-                network_packet* pkt = new network_packet();
                 
-                // ... traitement / envoi
+                std::vector<server_tcp*>            server_tcp_pool;
+                std::map<uint32_t, server_tcp*>     server_tcp_by_id;
 
-                delete pkt;
+                void new_server() {
+                    server_tcp* srv = new server_tcp();
+                    
+                    server_tcp_pool.push_back(srv);
+                    server_tcp_by_id[srv->id] = srv; 
+                }
+
+                // ... Un peu de traitement
+                void shutdown() {
+                    for (server_tcp* srv : server_tcp_pool) {
+                        delete srv;
+                    }
+                    server_tcp_pool.clear();
+                }
                 ```
-                Ce n'est pas des plus pratiques...
             </script>
         </section>
 
@@ -140,45 +158,76 @@
                 ```cpp
                 #include <memory>
 
-                std::shared_ptr<network_packet> b = std::make_shared<network_packet>();
+                std::vector<std::shared_ptr<server_tcp>>            server_tcp_pool;
+                std::map<uint32_t, std::shared_ptr<server_tcp>>     server_tcp_by_id;
 
-                /// Live your life b variable...
+                void new_server() {
+                    server_tcp* srv =  std::make_shared<server_tcp>();
+                    
+                    server_tcp_pool.push_back(srv);
+                    server_tcp_by_id[srv->id] = srv; 
+                }
+
+                /// Live your life server TCP variable...
+
+                void shutdown() {
+                    server_tcp_pool.clear();
+                }
                 ```
             </script>
+            <aside class="notes">
+                Ouvrir vers la gestion des variables (copie / valeur / move semantic)
+            </aside>
         </section>
 
-        <section>
-            <h3>Idée reçu n°2 : <h3>
-            <h3>"Je comprends rien aux paramètres des fonctions"</h3>
+
+        <section data-markdown>
+            <script type="text/template">
+                Zoomons sur la partie d'envoie de paquet
+                ```cpp
+                class server_tcp {
+                public:
+                    struct packet {
+                        uint64_t        req_id;
+                        uint8_t         data[25_mo];
+                        // ...
+                    };
+                public:
+                    void send(packet p) {  /* ... */ }     // Passage par valeur
+
+                    void run() {
+                        while (!done()) {
+                            packet pkt;
+
+                            // ... un peu de traitement
+
+                            send(pkt);
+                        }
+                    }
+                };
+                ```
+
+            </script>
         </section>
 
         <section data-markdown>
             <script type="text/template">
-                Passage par valeur
+                Améliorons cela avec un passage par référence
                 ```cpp
-                void send(network_packet p) { ... }     // Passage par valeur
+                class server_tcp {
+                public:
+                    void send(packet& p) {  /* ... */ }     // Passage par référence
 
-                void loop() {
-                    network_packet pkt;
+                    void run() {
+                        while (!done()) {
+                            packet pkt;
 
-                    send(pkt);                          // Copie de l'objet (64Ko à chaque appel !!)
-                }
-                ```
+                            // ... un peu de traitement
 
-            </script>
-        </section>
-
-        <section data-markdown>
-            <script type="text/template">
-                Passage par référence
-                ```cpp
-                void send(network_packet& p) { ... }     // Passage par référence
-
-                void loop() {
-                    network_packet pkt;
-
-                    send(pkt);                          // seul une référence vers l'objet est passée 
-                }
+                            send(pkt);
+                        }
+                    }
+                };
                 ```
             </script>
         </section>
@@ -187,22 +236,33 @@
             <!-- Faire un exemple en mode client serveur -->
             <script type="text/template">
                 ### Move Semantic
-                ...ou comment gérer la vie d'une variable
+                ...ou comment passer le controle d'une variable'
                 ```cpp
-                void send(network_packet&& p) { ... }     // Passage par rvalue
+                class server_tcp {
+                public:
+                    void send(packet&& p) {  /* ... */ }     // Passage par rvalue
 
-                void loop() {
-                    network_packet pkt;
+                    void run() {
+                        while (!done()) {
+                            packet pkt;
 
-                    send(std::move(pkt));                // Le control de l'objet pkt passe à la fonction send 
-                }
+                            // ... un peu de traitement
+
+                            send(std::move(pkt));
+                        }
+                    }
+                };
                 ```
             </script>
+            <aside class="notes">
+                Mot-clé: responsabilité de la variable
+                Exemple : send est une fonction multi thread
+            </aside>
         </section>
 
         <!-- Mot clé auto -->
         <section>
-            <h3>Idée reçu n°3</h3>
+            <h3>Idée reçu n°2</h3>
             <h3>"Il y a des déclarations de type partout ! </h3>
             <h3>Sans IDE c'est trop dure'"</h3>
         </section>
@@ -211,37 +271,45 @@
             <script type="text/template">
                 ### Rechercher de l'instance d'un serveur
                 ```cpp
-                struct server {
-                    std::string name;
-                    int socket;
+                class server_tcp {
+                public:
+                    uint32_t    id;
+                    socket      sock;
+                    // ... 
                 };
 
-                std::map<std::string, server>  server_pool;
+                std::vector<std::shared_ptr<server_tcp>>            server_tcp_pool;
+                std::map<uint32_t, std::shared_ptr<server_tcp>>     server_tcp_by_id;
                 
                 ...
 
-                std::map<std::string, foo>::iterator found = server_pool.find("toto");
-                std::string my_name = found->second.name;
+                std::map<uint32_t, std::shared_ptr<server_tcp>>::iterator found = server_pool.find(42);
+                socket sock = found->second->sock;
                 ```
             </script>
         </section>
 
         <section data-markdown>
             <script type="text/template">
-                On peut toujours utilisé un typedef
+                On peut toujours utilisé un alias (using ou typedef)
                 ```cpp
-                struct server {
-                    std::string name;
-                    int socket;
+                class server_tcp {
+                public:
+                    uint32_t    id;
+                    socket      sock;
+                    // ... 
                 };
 
-                typedef std::map<std::string, server> server_pool_type;
-                server_pool_type  server_pool;
+                typedef server_tcp_pool_type std::vector<std::shared_ptr<server_tcp>>;
+                using server_tcp_by_id_type = std::map<uint32_t, std::shared_ptr<server_tcp>>;
+
+                std::vector<std::shared_ptr<server_tcp>>            server_tcp_pool;
+                std::map<uint32_t, std::shared_ptr<server_tcp>>     server_tcp_by_id;
                 
                 ...
 
-                server_pool_type::iterator found = server_pool.find("toto");
-                std::string my_name = found->second.name;
+                std::map<uint32_t, std::shared_ptr<server_tcp>>::iterator found = server_tcp_by_id.find(42);
+                socket sock = found->second->sock;
                 ```
             </script>
         </section>
@@ -250,24 +318,31 @@
             <script type="text/template">
                 ### Le mot clé auto à la rescousse...
                 ```cpp
-                struct server {
-                    std::string name;
-                    int socket;
+                class server_tcp {
+                public:
+                    uint32_t    id;
+                    socket      sock;
+                    // ... 
                 };
 
-                std::map<std::string, server>  server_pool;
+
+                typedef server_tcp_pool_type std::vector<std::shared_ptr<server_tcp>>;
+                using server_tcp_by_id_type = std::map<uint32_t, std::shared_ptr<server_tcp>>;
+
+                std::vector<std::shared_ptr<server_tcp>>            server_tcp_pool;
+                std::map<uint32_t, std::shared_ptr<server_tcp>>     server_tcp_by_id;
                 
                 ...
 
-                auto found = server_pool.find("toto");
-                auto my_name = found->second.name;
+                auto found = server_tcp_by_id.find("toto");
+                auto sock = found->second->name;
                 ```
             </script>
         </section>
 
         <!-- Fonction lambda / haut niveau -->
         <section>
-            <h3>Idée reçu n°4</h3>
+            <h3>Idée reçu n°3</h3>
             <h3>"C'est un langage limité et bas niveau"</h3>
         </section>
 
@@ -275,49 +350,125 @@
             <!-- Reflechir à un cas concret basé sur les callbacks -->
             <!--  Parler de la façon "traditionnelle" de faire des fonctions -->
             <script type="text/template">
-                ### Fonction lambda
-                ...où comment faire des fonctions anonymes
+                Séquencement d'un serveur
                 ```cpp
-                auto f1 = [](int value) {
-                    std::cout << "value: " << value << std::endl;
+                class response_interface {
+                public:
+                    virtual void process_response(const packet& pkt) = 0; 
                 };
 
-                int i = 0;
-                auto f2 = [&i]() { ++i; };
+                class response_mngt
+                : public response_interface
+                {
+                public:
+                    void process_response(const packet& pkt) override {
+                        check_request(pkt.id);
+                        process_data(pkt.data);
+                    }
 
-                f2();   
-                std::cout << "i = " << i << std::endl;      // i = 1
+                public:
+                    void check_request(uint64_t id) { /* ...*/}
 
-                int j = 0;
-                auto f3 = [j]() {
-                    ++j;
-                    std::cout << "j = " << j << std::endl;  // j = 1
+                    template<typename Data>
+                    void process_data(Data& ) { /* ... */}
+                }
+
+                class server_tcp 
+                {
+                public:
+                    void send(packet&& pkt) { 
+                        /* send and receive response */
+                        rep_.process_response(resp);
+                    }
+
+                    void run() {
+                        while (!done()) {
+                            packet pkt;
+
+                            send(pkt);
+                        }
+                    }
+
+                private:
+                    response_mngt rep_;
                 };
+                ```
+            </script>
+        </section>
 
-                std::cout << "j = " << j << std::endl;     // j = 0
+        <section data-markdown>
+            <!-- Reflechir à un cas concret basé sur les callbacks -->
+            <!--  Parler de la façon "traditionnelle" de faire des fonctions -->
+            <script type="text/template">
+                ### Fonction lambda
+                ...où comment se simplifer la vie
+                ```cpp
+                class response_mngt
+                {
+                public:
+                    void check_request(uint64_t id) { /* ...*/}
+
+                    template<typename Data>
+                    void process_data(Data& ) { /* ... */}
+                }
+
+                using handle = std::function<void(const packet& )>;
+
+                class server_tcp {
+                public:
+                    void send(packet&& pkt, handle handle_response) { 
+                        /* send and receive response */
+                        handle_response(resp);
+                    }
+
+                    void run() {
+                        while (!done()) {
+                            packet pkt;
+
+                            auto response = [this](const packet& res) {
+                                rep_.check_response(res.id);
+                                rep_.process_data(res.data);
+                            };
+
+                            send(pkt, response);
+                        }
+                    }
+                private:
+                    response_mngt       rep_;
+                };
                 ```
             </script>
         </section>
 
         <section data-markdown>
             <script type="text/template">
-                ### Tuples
-                ...où comment jouer avec des structures simples
+                ### Literal
+                ...où comment définir ces propres types
                 ```cpp
-                int n = 1;
-                auto t1 = std::make_tuple(10, "toto", n);
+                struct size_value{
+                    uint64_t        value = 0;
+                };
 
-                int value1, value3;
-                std::string value2;
+                size_value operator ""_ko(unsigned long long int v) {
+                    size_value result;
+                    result.value = v * 1024 * 1024;
+                    return result;
+                }
 
-                std::tie(value1, value2, value3) = t1; 
+                size_value operator ""_mo(unsigned long long int v) {
+                    size_value result;
+                    result.value = v * 1024;
+                    return result;
+                }
+
+                auto buffer = 28_mo;    // buffer.value = 29360128
                 ```
             </script>
         </section>
 
         <!-- Librairies STL -->
         <section>
-            <h3>Idée reçu n°5</h3>
+            <h3>Idée reçu n°4</h3>
             <h3>"Il y a pas grand chose dans la librairie standard"</h3>
         </section>
 
@@ -359,10 +510,13 @@
         <!-- Phoenix -->
         <section>
             <h2><b>Phoenix</b></h2>
-            <p>comment faire du C++ aujourd'hui</p>
+            <p>Comment faire du C++ aujourd'hui</p>
             <div style="margin-top: 100px">
                 <img class="plain" width="30%" height="30%" src="img/phoenix.png"/>
             </div>
+            <aside class="notes">
+                parler des problèmes de build
+            </aside>
         </section>
 
         <section data-markdown>
