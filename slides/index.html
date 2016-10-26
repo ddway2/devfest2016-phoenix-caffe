@@ -509,14 +509,17 @@
 
         <!-- Phoenix -->
         <section>
-            <h2><b>Phoenix</b></h2>
-            <p>Comment faire du C++ aujourd'hui</p>
-            <div style="margin-top: 100px">
-                <img class="plain" width="30%" height="30%" src="img/phoenix.png"/>
-            </div>
+            <h3>Comment faire du C++ aujourd'hui ?</h3>
             <aside class="notes">
                 parler des problèmes de build
             </aside>
+        </section>
+
+        <section>
+            <h2><b>Phoenix</b></h2>
+            <div style="margin-top: 100px">
+                <img class="plain" width="30%" height="30%" src="img/phoenix.png"/>
+            </div>
         </section>
 
         <section data-markdown>
@@ -524,22 +527,65 @@
                 ### Toolchain de build
 
                 * Pour gérer un projet C++
-                * Pour gérer ses dépendances
+                * Pour gérer ses dépendances de build
                 * "Multi plateforme" -> Utilisation de docker
+                * Génération d'image utilisable dans un cloud
             </script>
         </section>
 
         <section data-markdown>
             <script type="text/template">
                 ### Exemple d'utilisation
+                Créer un projet
                 ```bash
                 phoenix-bootstrap
-                phoenix-build configure
-                phoenix-build build
-                phoenix-build install
-                phoenix-build run
                 ```
             </script>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+            ### Un projet phoenix
+            Un fichier de description : cbuild.conf
+            ```bash
+            PKG_VER=1.0
+            PKG_REV=1
+            PKG_SHORTDESC="Caffe C++ Datamining"
+            PKG_LONGDESC="
+            Caffe server for C++ Datamining with phoenix integration
+            "
+
+            # cbuild settings
+            PRJ_NAME=caffe-datamining
+            PRJ_SERVER=server
+            PRJ_OPTS["std"]=c++14
+            ```
+            </script>
+        </section>
+
+        <section data-markdown>
+             <script type="text/template">
+             ### Un projet phoenix
+             Une arboresence
+             ```bash
+├── sources
+│   ├── binaries
+│   │   ├── predicate
+│   │   │   └── main.cpp
+│   │   └── server
+│   │       └── main.cpp
+│   ├── include
+│   │   └── caffe-datamining
+│   │       └── devfest2016
+│   │           ├── classifier.hpp
+│   │           └── signal.hpp
+│   └── libraries
+│       └── caffe-datamining
+│           ├── classifier.cpp
+│           └── signal.cpp
+└── cbuild.conf
+             ```
+             </script>
         </section>
 
         <!-- Petit exemple comparé -->
