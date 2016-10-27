@@ -65,7 +65,7 @@
                 <ul>
                 <li>Performance</li>
                 <li>Compétence</li>
-                <li>Haut niveau / Matos</li>
+                <li>Matos performant - réduction des cout de maintenance</li>
                 <li>Librairie existante</li>
                 </ul>
             </aside>
@@ -321,12 +321,12 @@
                 typedef server_tcp_pool_type std::vector<std::shared_ptr<server_tcp>>;
                 using server_tcp_by_id_type = std::map<uint32_t, std::shared_ptr<server_tcp>>;
 
-                std::vector<std::shared_ptr<server_tcp>>            server_tcp_pool;
-                std::map<uint32_t, std::shared_ptr<server_tcp>>     server_tcp_by_id;
+                server_tcp_pool_type      server_tcp_pool;
+                server_tcp_by_id_type     server_tcp_by_id;
                 
                 ...
 
-                std::map<uint32_t, std::shared_ptr<server_tcp>>::iterator found = server_tcp_by_id.find(42);
+                server_tcp_by_id_type::iterator found = server_tcp_by_id.find(42);
                 socket sock = found->second->sock;
                 ```
             </script>
@@ -347,8 +347,8 @@
                 typedef server_tcp_pool_type std::vector<std::shared_ptr<server_tcp>>;
                 using server_tcp_by_id_type = std::map<uint32_t, std::shared_ptr<server_tcp>>;
 
-                std::vector<std::shared_ptr<server_tcp>>            server_tcp_pool;
-                std::map<uint32_t, std::shared_ptr<server_tcp>>     server_tcp_by_id;
+                server_tcp_pool_type      server_tcp_pool;
+                server_tcp_by_id_type     server_tcp_by_id;
                 
                 ...
 
@@ -460,7 +460,7 @@
 
         <section data-markdown>
             <script type="text/template">
-                ### Literal
+                ### Define user Literal
                 ...où comment définir ces propres types
                 ```cpp
                 struct size_value{
@@ -469,17 +469,17 @@
 
                 constexpr size_value operator ""_ko(unsigned long long int v) {
                     size_value result;
-                    result.value = v * 1024 * 1024;
+                    result.value = v * 1024;
                     return result;
                 }
 
                 constexpr size_value operator ""_mo(unsigned long long int v) {
                     size_value result;
-                    result.value = v * 1024;
+                    result.value = v * 1024 * 1024;
                     return result;
                 }
 
-                auto buffer = 28_mo;    // buffer.value = 29360128
+                auto buffer_size = 28_mo;    // buffer.value = 29360128
                 ```
             </script>
         </section>
@@ -627,7 +627,7 @@ my-project
 
             phoenix-build image
             ```
-            That All...
+            That's All...
             </script>
         </section>
 
@@ -762,10 +762,6 @@ my-project
                 ### Http serveur python
                 Du classique : Flask
                 ```python
-                import cPickle as pickle
-                import numpy as np
-                import json 
-                from PIL import Image
                 import sys
                 import os
                 from flask import Flask
@@ -776,13 +772,7 @@ my-project
                 import caffe
 
                 def loadNet():
-                    blob = caffe.proto.caffe_pb2.BlobProto()
-                    data = open( 'share/mean.binaryproto' , 'rb' ).read()
-                    blob.ParseFromString(data)
-                    arr = np.array( caffe.io.blobproto_to_array(blob) )
-                    net = caffe.Classifier('share/cifar10_quick.prototxt', \
-                        'share/cifar10_quick_iter_5000.caffemodel.h5',\
-                    image_dims=(32, 32), mean=arr[0],raw_scale=255)
+                    # ... Loading Net
 
                     return(net)
 
@@ -800,7 +790,6 @@ my-project
                         flash('No Selected file')
                         return redirect(request.url)
                     
-                    app.logger.info('File loaded ' + file.filename)
                     filename = file.filename
                     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                     
@@ -838,7 +827,7 @@ my-project
                 <li>Cpp+Caffe+Nx : 60 req/s</li>
             </ul>
         </section>
-
+<!--
         <section>
             <h3>Et si on veut étendre Caffe ?</h3>
             <ul>
@@ -921,14 +910,23 @@ my-project
             <h3>Un petit exemple concret</h3>
 
         </section>
-
+-->
         <section>
-            <h3>Perspectives</h3>
+            <h3>Conclusion</h3>
             <ul>
                 <li>Utilisation des nouvelles technologies</li>
                 <li>Industrialisation des POC DataMining</li>
                 <li>Disponibilité des compétences (Go/R)</li>
                 <li>Obtenir le maximum d'une architecture hardware</li>
+            </ul>
+        </section>
+        <section>
+            <h3>Remerciements</h3>
+            <ul>
+                <li>Remy Chibois - cbuild</li>
+                <li>Anthony Garreau - GUI</li>
+                <li>Expandium</li>
+                <li>Et l'équipe du DevFest</li>
             </ul>
         </section>
         <section>
