@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link href="bootstrap.min.css" rel="stylesheet" type="text/css"></link>
+    <script>
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var length = ev.dataTransfer.items.length;
+        for (var i = 0; i < length; i++) {
+            var entry = ev.dataTransfer.items[i].getAsFile();
+            console.log(entry)
+            var img = document.getElementById("drag1");
+            var reader = new FileReader();
+            reader.onload = (function (aImg) { 
+                return function (e) { 
+                    aImg.src = e.target.result; 
+                    var dropText = document.getElementById("dropText");
+                    dropText.remove();
+                }; 
+            })(img);
+            reader.readAsDataURL(entry);
+        }
+    }
+    </script>
+</head>
+    <body>
+        
+        <div class='row' style="margin-top:30px;display:flex;justify-content:center;align-items:center;">
+            
+            <div style="width:500px;height:500px;border:5px dashed #b3b4b9;display:flex;justify-content:center;align-items:center;border-radius:20px;padding:10px;" 
+             id="dropzone" 
+             ondrop="drop(event)" 
+             ondragover="allowDrop(event)">
+                <div id="dropText" style="font-size:30px;color:#b3b4b9;font-family:'Comic Sans MS';">Drop me some awesome image</div>
+                <img id="drag1" 
+                     draggable="true" 
+                     ondragstart="drag(event)"
+                     style="max-width: 100%;max-height: 100%"/>
+            </div>
+            
+        </div>
+         <div class='row' style="margin-top:30px;display:flex;justify-content:center;align-items:center;">
+                <button class='btn btn-default' style="font-family:'Comic Sans MS';">Process bitch!</button>
+            </div>
+    </body>
+</html>
