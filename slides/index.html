@@ -807,10 +807,38 @@ my-project
             <script type="text/template">
                 ### Http serveur C++
                 ```cpp
-                    int main(){
-                        auto proutprout;
-                    }
+    auto classifier = std::make_unique<devfest2016::classifier>(); 
 
+    using namespace nx;
+
+    httpd srv;
+    MPFD::Parser  part_parser;
+    part_parser.SetTempDirForFileUpload("/src/tmp");
+
+    srv(POST) / "predict_from_file" = [&](const request& req, buffer& data, reply& rep) {
+        try {
+            auto content_type = req.h("Content-Type");
+            part_parser.SetContentType(content_type);
+            part_parser.AcceptSomeData(&(data[0]), data.size());
+            auto fields = part_parser.GetFieldsMap();
+       
+            for (const auto& f : fields)  {
+                if (f.second->GetType() == MPFD::Field::FileType) {
+                    auto result = classifier->classify(f.second->GetTempFileName());
+                    cxxu::rmfile(f.second->GetTempFileName());
+                    rep << 
+                        nx::json(result)
+                        ;
+                }
+            }
+        }
+        catch(MPFD::Exception& e)  {
+            std::cerr << "Exception parser: " << e.GetError() << std::endl;
+        }
+    };
+
+    srv(make_endpoint(bind_addr, bind_port));
+    std::cout << "Serve at " << bind_addr << ":" << bind_port << std::endl;
                 ```
             </script>
         </section>
