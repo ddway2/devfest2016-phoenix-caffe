@@ -1,16 +1,22 @@
-import cPickle as pickle
-#import conv_net
 import numpy as np
 import json 
-from PIL import Image
+import pandas as pd
+#from PIL import Image
 import sys
 import os
 from flask import Flask
 from flask import request
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = '/tmp'
+from flask_cors import CORS, cross_origin
+import skimage.io
 
-caffe_root = '/usr'
+
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = '/tmp/'
+CORS(app)
+cors = CORS(app, resources={r"*": {"origins": "*"}})
+
+caffe_root = '/usr/lib/caffe'
 sys.path.insert(0, caffe_root + '/python')
 
 import caffe
@@ -36,6 +42,7 @@ def predict_from_file():
 		return redirect(request.url)
 	file = request.files['upload_file']
 	app.logger.info('file found')
+
 	if file.filename == '':
 		flash('No Selected file')
 		return redirect(request.url)
@@ -44,8 +51,17 @@ def predict_from_file():
 	filename = file.filename
 	file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	
-	x   = net.predict( [ caffe.io.load_image(file) ])
-	return json.dumps(x.tolist())
+	#x          = net.predict( [ caffe.io.load_image(file) ])
+	img         = skimage.img_as_float(skimage.io.imread(os.path.join(app.config['UPLOAD_FOLDER'], filename), as_grey=False)).astype(np.float32)
+	class_names = ["airplane","automobile","bird","cat","deer","dog","frog","horse","ship","truck"];
+
+	x   = net.predict([img])
+	x   = x.tolist()[0];
+	x   = [ '%.2f' % elem for elem in x ]
+	ret = pd.DataFrame({'name':class_names, 'prediction':x}).sort_values('prediction',ascending=False).to_json(orient="records")
+	print({"predictions":ret})
+	
+	return json.dumps({"predictions":ret})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

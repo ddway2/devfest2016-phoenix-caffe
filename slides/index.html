@@ -6,6 +6,8 @@
 	<link rel="stylesheet" href="css/theme/simple.css" id="theme">
     <link rel="stylesheet" href="css/my_style.css">
     <link rel="stylesheet" href="lib/css/zenburn.css"> 
+    <script src="lib/js/jquery.min.js" ></script>
+    <script src="js/demo.js" ></script>
 </head>
 <body>
 <div class="reveal">
@@ -857,7 +859,24 @@ my-project
 
         <section>
         <h3>Demo : </h3>
-        URL VERS DEMO
+
+            <div class='row' style="margin-top:30px;display:flex;justify-content:center;align-items:center;">
+                <form id="fakeForm"></form>
+                <div style="width:500px;height:500px;border:5px dashed #b3b4b9;display:flex;justify-content:center;align-items:center;border-radius:20px;padding:10px;"
+                 id="dropzone"
+                 ondrop="drop(event)"
+                 ondragover="allowDrop(event)">
+                    <div id="dropText" style="font-size:30px;color:#b3b4b9;font-family:'Comic Sans MS';">Drop me some awesome image</div>
+                    <img id="drag1"
+                         draggable="true"
+                         ondragstart="drag(event)"
+                         style="max-width: 100%;max-height: 100%"/>
+                </div>
+            </div>
+             <div class='row' style="margin-top:30px;display:flex;justify-content:center;align-items:center;">
+                <div id='whatIsIt' style="font-size: 25px;font-family:'Comic Sans MS';"></div>
+            </div>
+
         </section>
 
         <section>
