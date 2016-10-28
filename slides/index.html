@@ -33,9 +33,12 @@
         <!-- Context -->
         <section>
             <h3>Qui sommes-nous ?</h3>
-            <img src="img/expandium-300x164.jpg" width="30%" style="float: right; border: none;"/>
+            <div style="width: 40%; float: right;">
+                <img class="plain" src="img/expandium-300x164.jpg"/>
+                <a href="https://twitter.com/expandiumsas">@ExpandiumSAS</a>
+            </div>
             <div class="ulist">
-                <ul style="width: 60%">
+                <ul style="width: 50%">
                     <li>11 ans d'expérience</li>
                     <li>Monitoring passif du coeur de réseau d'opérateurs télécom</li>
                     <li>Les opérateurs mobiles et les entreprises de chemin de fer (GSM-R)</li>
@@ -87,14 +90,14 @@
         <!-- Slide C++ -->
         <!-- Historique C++ -->
         <section>
-            <h2>Au commencement : 1979</h2>
+            <h2>Au commencement : 1979 - 1983</h2>
             <h3>C with Classes</h3>
             <div style="margin-top: 100px;">
                 <img class="plain" src="img/220px-BjarneStroustrup.jpg"/>
                 <h6>Bjarne Stroustrup</h6>
             </div>
             <aside class="notes">
-                Deviens en 1983 C++
+                Deviens en 1983 le C++
             </aside>
         </section>
         
@@ -180,12 +183,15 @@
                 }
                 ```
             </script>
+            <aside class="notes">
+                La lourdeur de devoir gérer les variables dynamiques
+            </aside>
         </section>
 
         <section data-markdown>
             <script type="text/template">
                 ### Smart Pointer
-                Le pointeur partagé
+                Le pointeur intelligent pour partagé les variables
                 ```cpp
                 #include <memory>
 
@@ -220,7 +226,7 @@
                 public:
                     struct packet {
                         uint64_t        id;
-                        uint8_t         data[25_mo];
+                        uint8_t         data[2000000];        // Big packet
                         // ...
                     };
                 public:
@@ -237,7 +243,7 @@
                     }
                 };
                 ```
-
+                Une copie de 200000 octets... Ce n'est pas l'idéal
             </script>
         </section>
 
@@ -260,6 +266,7 @@
                     }
                 };
                 ```
+                Mais que ce passe-t-il si send est asynchrone ?
             </script>
         </section>
 
@@ -320,6 +327,7 @@
                 std::map<uint32_t, std::shared_ptr<server_tcp>>::iterator found = server_pool.find(42);
                 socket sock = found->second->sock;
                 ```
+                C'est un peu verbeux non ?
             </script>
         </section>
 
@@ -346,6 +354,9 @@
                 socket sock = found->second->sock;
                 ```
             </script>
+            <aside class="notes">
+                Dois je vraiement connaitre le type de la variable found ?
+            </aside>
         </section>
 
         <section data-markdown>
@@ -359,7 +370,6 @@
                     // ... 
                 };
 
-
                 typedef server_tcp_pool_type std::vector<std::shared_ptr<server_tcp>>;
                 using server_tcp_by_id_type = std::map<uint32_t, std::shared_ptr<server_tcp>>;
 
@@ -371,6 +381,9 @@
                 auto found = server_tcp_by_id.find("toto");
                 auto sock = found->second->name;
                 ```
+                <aside class="notes">
+                    Le type de found est définis grace au type de retour de la la fonction find
+                </aside>
             </script>
         </section>
 
@@ -381,8 +394,6 @@
         </section>
 
         <section data-markdown>
-            <!-- Reflechir à un cas concret basé sur les callbacks -->
-            <!--  Parler de la façon "traditionnelle" de faire des fonctions -->
             <script type="text/template">
                 Exemple : gestion des réponses
                 ```cpp
@@ -476,26 +487,41 @@
 
         <section data-markdown>
             <script type="text/template">
-                ### Define user Literal
-                ...ou comment définir ces propres types
+                ### Les constantes "magiques"
+                Qui n'a pas déjà vu cela dans du code :
                 ```cpp
-                struct size_value{
-                    uint64_t        value = 0;
+                const uint64_t delay = 200;     // 200 quoi ? secondes, millisecondes ?
+
+                process_data(42, packet);       //  La réponse à la grande question sur la vie ?
+                ```
+            </script>
+        </section>
+
+        <section data-markdown>
+            <script type="text/template">
+                ### User defined literal
+                ```cpp
+                const duration_type delay = 200_ms;
+
+                process_data(42_mo, packet);
+                ``` 
+                Pour la mise en oeuvre :
+                ```cpp
+                struct duration_type {
+                    uint64_t        value_ms = 0;
                 };
 
-                constexpr size_value operator ""_ko(unsigned long long int v) {
-                    size_value result;
-                    result.value = v * 1024;
+                constexpr duration_type operator ""_s(unsigned long long int v) {
+                    duration_type result;
+                    result.value_ms = v * 1000;
                     return result;
                 }
 
-                constexpr size_value operator ""_mo(unsigned long long int v) {
-                    size_value result;
-                    result.value = v * 1024 * 1024;
+                constexpr duration_type operator ""_ms(unsigned long long int v) {
+                    duration_type result;
+                    result.value_ms = v;
                     return result;
                 }
-
-                auto buffer_size = 28_mo;    // buffer.value = 29360128
                 ```
             </script>
         </section>
@@ -507,7 +533,7 @@
         </section>
 
         <section>
-            <h3>Le "standard" C++ :</h3>
+            <h3>Le "standard" C++ en 2014</h3>
             <br/>
             <h4><b>La bibliothèque STL</b></h4>
             <p>
@@ -574,14 +600,18 @@
         </section>
 
         <section>
-            <a align="left"><h3>Solution</h3></a>
-            <img src="img/photo-docker.jpg" width="30%" style="float: right; border: none;"/>
-            <div class="ulist">
-                <ul style="width: 60%">
+            <div class="ulist" style="width:100%">
+                <a align="left"><h3>Solution</h3></a>
+                <ul style="width: 85%">
                     <li>Docker</li>
                     <li>Debian apt</li>
                     <li>cbuild (Remy Chibois)</li>
                 </ul>
+                
+            </div>
+            <div style="width:100%">
+                <img src="img/logo-debian.jpg" width="250px" style="margin-right: 41px;border: none;box-shadow: none;"/>
+                <img src="img/photo-docker.jpg" width="400px" style="border: none; box-shadow: none;"/>
             </div>
         </section>
 
