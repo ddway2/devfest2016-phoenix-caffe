@@ -24,6 +24,7 @@
                 <li>Présentation</li>
                 <li>Technologie C++</li>
                 <li>Application au Machine Learning</li>
+                <li>Petite démo</li>
             </ul>
         </section>
         
@@ -45,8 +46,8 @@
         <section>
             <h3>Qui sommes-nous ?</h3>
             <h4>Pierre Salmon</h4>
-                <a href="https://github.com/ddway2">https://github.com/ddway2</a>
-                <img class="plain" src="img/cpp_img.jpg"/>
+                <p><a href="https://github.com/ddway2">https://github.com/ddway2</a></p>
+                <img style="float: bottom" class="plain" src="img/cpp_img.jpg"/>
         </section>
 
         <section>
@@ -137,8 +138,8 @@
 
         <!-- Idée reçu n°1 -->
         <section>
-            <h3>Idée reçu n°1 : <h3>
-            <h3>"Il n'y a pas de Garbage Collector : il faut gérer soi même la mémoire et les objets"</h3>
+            <h3>Idée reçue n°1 : <h3>
+            <h3>"Il n'y a pas de Garbage Collector : il faut gérer soi-même la mémoire et les objets"</h3>
             <aside class="notes">
                 Notion de controle - rapport performance/responsabilité
             </aside>
@@ -209,7 +210,7 @@
 
         <section data-markdown>
             <script type="text/template">
-                Focus sur la partie d'envoi de paquet
+                Focus sur l'envoi de paquet
                 ```cpp
                 class server_tcp {
                 public:
@@ -262,7 +263,7 @@
             <!-- Faire un exemple en mode client serveur -->
             <script type="text/template">
                 ### Move Semantic
-                ...ou comment passer le controle d'une variable'
+                ...ou comment passer le controle d'une variable
                 ```cpp
                 class server_tcp {
                 public:
@@ -288,7 +289,7 @@
 
         <!-- Mot clé auto -->
         <section>
-            <h3>Idée reçu n°2</h3>
+            <h3>Idée reçue n°2</h3>
             <h3>"Il y a du typage partout ! </h3>
             <h3>Sans IDE c'est trop dure"</h3>
             <aside class="notes">
@@ -371,7 +372,7 @@
 
         <!-- Fonction lambda / haut niveau -->
         <section>
-            <h3>Idée reçu n°3</h3>
+            <h3>Idée reçue n°3</h3>
             <h3>"C'est un langage limité et bas niveau"</h3>
         </section>
 
@@ -497,7 +498,7 @@
 
         <!-- Librairies STL -->
         <section>
-            <h3>Idée reçu n°4</h3>
+            <h3>Idée reçue n°4</h3>
             <h3>"Il y a pas grand chose dans la librairie standard"</h3>
         </section>
 
@@ -816,7 +817,7 @@ my-project
 
         <section data-markdown>
             <script type="text/template">
-                ### Http serveur C++
+                ### Http serveur C++ sur Phoenix
                 ```cpp
     auto classifier = std::make_unique<devfest2016::classifier>(); 
 
@@ -863,7 +864,7 @@ my-project
             <h3>Et les perfs ?</h3>
             <ul>
                 <li>Python+Caffe+Flask : 30req/s</li>
-                <li>Cpp+Caffe+Nx : 60 req/s</li>
+                <li>Phoenix+Caffe+Nx : 60 req/s</li>
             </ul>
         </section>
 <!--
