@@ -5,7 +5,7 @@ import pandas as pd
 import sys
 import os
 from flask import Flask
-from flask import request
+from flask import request, Response
 from flask_cors import CORS, cross_origin
 import skimage.io
 
@@ -34,6 +34,20 @@ def loadNet():
 
 net = loadNet()
 
+def get_file(filename): 
+    try:
+        src = os.path.join(filename)
+        return open(src).read()
+    except IOError as exc:
+        return str(exc)
+
+@app.route("/demo", methods = ['GET'])
+def index():
+	print("hello")
+	#return app.send_static_file('/home/expand/devfest2016-phoenix-caffe/slides/demo.html')
+	content = get_file('/home/expand/devfest2016-phoenix-caffe/slides/demo.html')
+	return Response(content)
+
 @app.route("/predict_from_file", methods = ['POST'])
 def predict_from_file():
 	app.logger.info('Predict OK')
@@ -53,14 +67,11 @@ def predict_from_file():
 	
 	#x          = net.predict( [ caffe.io.load_image(file) ])
 	img         = skimage.img_as_float(skimage.io.imread(os.path.join(app.config['UPLOAD_FOLDER'], filename), as_grey=False)).astype(np.float32)
-	class_names = ["airplane","automobile","bird","cat","deer","dog","frog","horse","ship","truck"];
+	class_names = ["airplane","automobile","bird","cat","deer","dog","frog","horse","ship","truck"]
 
-	x   = net.predict([img])
-	x   = x.tolist()[0];
+	x   = net.predict([img]).tolist()[0]
 	x   = [ '%.2f' % elem for elem in x ]
 	ret = pd.DataFrame({'name':class_names, 'prediction':x}).sort_values('prediction',ascending=False).to_json(orient="records")
-	print({"predictions":ret})
-	
 	return json.dumps({"predictions":ret})
 
 if __name__ == "__main__":

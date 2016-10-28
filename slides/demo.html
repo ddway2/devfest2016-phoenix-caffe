@@ -4,6 +4,7 @@
     <link href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"></link>
     <script src="https://unpkg.com/jquery@3.1.1/dist/jquery.min.js" ></script>
     <script>
+    
     function allowDrop(ev) {
       ev.preventDefault();
     }
@@ -26,24 +27,37 @@
             aImg.src = e.target.result;
             // remove text
             var dropText = document.getElementById("dropText");
-            dropText.remove();
+            if(dropText) dropText.remove();
 
             var formData = new FormData();
             formData.append('upload_file', entry);
 
             $.ajax({
               headers: {
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': 'http://10.44.0.129:5000',
                 'Content-Type': undefined
               },
-              url: 'http://localhost:5000/predict_from_file',
+              url: 'http://10.44.0.129:5000/predict_from_file',
               data: formData,
               type: 'POST',
               contentType: false,
               processData: false,
               crossDomain: true,
               success: function(msg) {
-                console.log('hey', msg);
+                console.log(msg)
+                var data = JSON.parse(msg)
+                data = JSON.parse(data.predictions)
+                console.log(data)
+                var myNode = document.getElementById("whatIsIt");
+        while (myNode.firstChild) {
+            myNode.removeChild(myNode.firstChild);
+        }
+                for(var i = 0; i < data.length; i++) {
+                  child = data[i];
+                  var childNode = document.createElement("div");
+                  document.getElementById("whatIsIt").appendChild(childNode);
+                  childNode.innerText = child.name + " : " + child.prediction;
+                }
               },
             })
           };
@@ -55,22 +69,21 @@
 </head>
     <body>
 
-        <div class='row' style="margin-top:30px;display:flex;justify-content:center;align-items:center;">
-            <form id="fakeForm"></form>
-            <div style="width:500px;height:500px;border:5px dashed #b3b4b9;display:flex;justify-content:center;align-items:center;border-radius:20px;padding:10px;"
-             id="dropzone"
-             ondrop="drop(event)"
-             ondragover="allowDrop(event)">
-                <div id="dropText" style="font-size:30px;color:#b3b4b9;font-family:'Comic Sans MS';">Drop me some awesome image</div>
-                <img id="drag1"
-                     draggable="true"
-                     ondragstart="drag(event)"
-                     style="max-width: 100%;max-height: 100%"/>
+       <div class='row' style="margin-top:30px;display:flex;justify-content:center;align-items:center;">
+                <form id="fakeForm"></form>
+                <div style="width:500px;height:500px;border:5px dashed #b3b4b9;display:flex;justify-content:center;align-items:center;border-radius:20px;padding:10px;"
+                 id="dropzone"
+                 ondrop="drop(event)"
+                 ondragover="allowDrop(event)">
+                    <div id="dropText" style="font-size:30px;color:#b3b4b9;font-family:'Comic Sans MS';">Drop me some awesome image</div>
+                    <img id="drag1"
+                         draggable="true"
+                         ondragstart="drag(event)"
+                         style="max-width: 100%;max-height: 100%"/>
+                </div>
             </div>
-
-        </div>
-         <div class='row' style="margin-top:30px;display:flex;justify-content:center;align-items:center;">
-                <button class='btn btn-default' style="font-family:'Comic Sans MS';">Process bitch!</button>
+             <div class='row' style="margin-top:30px;display:flex;justify-content:center;align-items:center;">
+                <div id='whatIsIt' style="font-size: 25px;font-family:'Comic Sans MS';"></div>
             </div>
     </body>
 </html>
