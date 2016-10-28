@@ -16,7 +16,7 @@ app.config['UPLOAD_FOLDER'] = '/tmp/'
 CORS(app)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
 
-caffe_root = '/home/expand/caffe'
+caffe_root = '/usr/lib/caffe'
 sys.path.insert(0, caffe_root + '/python')
 
 import caffe
