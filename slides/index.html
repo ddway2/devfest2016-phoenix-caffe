@@ -26,14 +26,13 @@
                 <li>Présentation</li>
                 <li>Technologie C++</li>
                 <li>Application au Machine Learning</li>
-                <li>Démo</li>
+                <li>Petite démo</li>
             </ul>
         </section>
         
         <!-- Context -->
         <section>
             <h3>Qui sommes-nous ?</h3>
-            <a align="left"><h4>Présentation</h4></a>
             <img src="img/expandium-300x164.jpg" width="30%" style="float: right; border: none;"/>
             <div class="ulist">
                 <ul style="width: 60%">
@@ -48,8 +47,8 @@
         <section>
             <h3>Qui sommes-nous ?</h3>
             <h4>Pierre Salmon</h4>
-                <a href="https://github.com/ddway2">https://github.com/ddway2</a>
-                <img class="plain" src="img/cpp_img.jpg"/>
+                <p><a href="https://github.com/ddway2">https://github.com/ddway2</a></p>
+                <img style="float: bottom" class="plain" src="img/cpp_img.jpg"/>
         </section>
 
         <section>
@@ -88,12 +87,15 @@
         <!-- Slide C++ -->
         <!-- Historique C++ -->
         <section>
-            <h2>Au commencement : 1983</h2>
+            <h2>Au commencement : 1979</h2>
             <h3>C with Classes</h3>
             <div style="margin-top: 100px;">
                 <img class="plain" src="img/220px-BjarneStroustrup.jpg"/>
                 <h6>Bjarne Stroustrup</h6>
             </div>
+            <aside class="notes">
+                Deviens en 1983 C++
+            </aside>
         </section>
         
         <section>
@@ -141,7 +143,7 @@
         <!-- Idée reçu n°1 -->
         <section>
             <h3>Idée reçue n°1 : <h3>
-            <h3>"Il n'y a pas de Garbage Collector : il faut gérer soi même la mémoire et les objets"</h3>
+            <h3>"Il n'y a pas de Garbage Collector : il faut gérer soi-même la mémoire et les objets"</h3>
             <aside class="notes">
                 Notion de controle - rapport performance/responsabilité
             </aside>
@@ -212,7 +214,7 @@
 
         <section data-markdown>
             <script type="text/template">
-                Focus sur la partie d'envoi de paquet
+                Focus sur l'envoi de paquet
                 ```cpp
                 class server_tcp {
                 public:
@@ -265,7 +267,7 @@
             <!-- Faire un exemple en mode client serveur -->
             <script type="text/template">
                 ### Move Semantic
-                ...ou comment passer le controle d'une variable'
+                ...ou comment passer le controle d'une variable
                 ```cpp
                 class server_tcp {
                 public:
@@ -301,7 +303,7 @@
 
         <section data-markdown>
             <script type="text/template">
-                ### Rechercher de l'instance d'un serveur
+                ### Management d'un pool de serveur
                 ```cpp
                 class server_tcp {
                 public:
@@ -323,7 +325,7 @@
 
         <section data-markdown>
             <script type="text/template">
-                On peut toujours utilisé un alias (using ou typedef)
+                On peut toujours utiliser un alias (using ou typedef)
                 ```cpp
                 class server_tcp {
                 public:
@@ -433,7 +435,7 @@
             <!--  Parler de la façon "traditionnelle" de faire des fonctions -->
             <script type="text/template">
                 ### Fonction lambda
-                ...où comment se simplifer la vie
+                ...ou comment se simplifer la vie
                 ```cpp
                 class response_mngt
                 {
@@ -475,7 +477,7 @@
         <section data-markdown>
             <script type="text/template">
                 ### Define user Literal
-                ...où comment définir ces propres types
+                ...ou comment définir ces propres types
                 ```cpp
                 struct size_value{
                     uint64_t        value = 0;
@@ -525,7 +527,7 @@
 
         <section data-markdown>
             <script type="text/template">
-                ### Quelques exemples:
+                ### Quelques exemples :
                 * Expandium NX - Librairie HTTP asynchrone
                 * Facebook Wangle - Librairie réseau
                 * Facebook Folly - Collection d'utilitaire
@@ -572,9 +574,7 @@
         </section>
 
         <section>
-            <a align="left"><h3>Solution</h3>
-            <p>L'assemblage de 3 technologies</p>
-            </a>
+            <a align="left"><h3>Solution</h3></a>
             <img src="img/photo-docker.jpg" width="30%" style="float: right; border: none;"/>
             <div class="ulist">
                 <ul style="width: 60%">
@@ -819,7 +819,7 @@ my-project
 
         <section data-markdown>
             <script type="text/template">
-                ### Http serveur C++
+                ### Http serveur C++ sur Phoenix
                 ```cpp
     auto classifier = std::make_unique<devfest2016::classifier>(); 
 
@@ -883,7 +883,7 @@ my-project
             <h3>Et les perfs ?</h3>
             <ul>
                 <li>Python+Caffe+Flask : 30req/s</li>
-                <li>Cpp+Caffe+Nx : 60 req/s</li>
+                <li>Phoenix+Caffe+Nx : 60 req/s</li>
             </ul>
         </section>
 <!--
