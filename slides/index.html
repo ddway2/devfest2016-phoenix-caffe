@@ -17,7 +17,12 @@
         <section>
             <h1>C++</h1>
             <h1>The Beast is back !!</h1>
-                        
+            <aside class="notes">
+                <ul>
+                    <li>Petit sondage sur les utilisateurs du C++</li>
+                    <li>Technologie sois disant obsolète</li>
+                </ul>    
+            </aside>
         </section>
 
         <section>
@@ -45,6 +50,11 @@
                     <li>Analyse / Business Intelligence</li>
                 </ul>
             </div>
+            <aside class="notes">
+                <ul>
+                    <li>Opérateur téléphonique : 3 Milliard de transaction par jour (2.5 Milliard sur 10h)</li>
+                </ul>
+            </aside>
         </section>
 
         <section>
@@ -52,6 +62,9 @@
             <h4>Pierre Salmon</h4>
                 <p><a href="https://github.com/ddway2">https://github.com/ddway2</a></p>
                 <img style="float: bottom" class="plain" src="img/cpp_img.jpg"/>
+            <aside class="notes">
+                Gros système
+            </aside>
         </section>
 
         <section>
@@ -97,7 +110,9 @@
                 <h6>Bjarne Stroustrup</h6>
             </div>
             <aside class="notes">
-                Deviens en 1983 le C++
+                <ul>
+                    <li>Deviens en 1983 le C++ - histoire sur la notion d'incrément</li>
+                </ul>
             </aside>
         </section>
         
@@ -184,7 +199,11 @@
                 ```
             </script>
             <aside class="notes">
-                La lourdeur de devoir gérer les variables dynamiques
+                <ul>
+                    <li>La lourdeur de devoir gérer les variables dynamiques</li>
+                    <li>Risque d'erreur si la variable est détruite trop tot</li>
+                    <li>Ouvrir sur : il ya une solution maintenant</li>
+                </ul>
             </aside>
         </section>
 
@@ -213,7 +232,10 @@
                 ```
             </script>
             <aside class="notes">
-                Ouvrir vers la gestion des variables (copie / valeur / move semantic)
+                <ul>
+                    <li>Comptage automatique des références d'une variable</li>
+                    <li>Variable dynamique : Ouvrir vers la gestion des variables (copie / valeur / move semantic)</li>
+                </ul>
             </aside>
         </section>
 
@@ -245,6 +267,12 @@
                 ```
                 Une copie de 200000 octets... Ce n'est pas l'idéal
             </script>
+            <aside class="notes">
+                <ul>
+                    <li>Une grosse structure paquet à copier</li>
+                    <li>Passage par valeur: copie complète</li>
+                </ul>
+            </aside>
         </section>
 
         <section data-markdown>
@@ -268,13 +296,18 @@
                 ```
                 Mais que ce passe-t-il si send est asynchrone ?
             </script>
+            <aside class="notes">
+                <ul>
+                    <li>Notion de scope d'une variable</li>
+                </ul>
+            </aside>
         </section>
 
         <section data-markdown>
             <!-- Faire un exemple en mode client serveur -->
             <script type="text/template">
                 ### Move Semantic
-                ...ou comment passer le controle d'une variable
+                ...ou comment passer le controle d'une variable à un autre scope
                 ```cpp
                 class server_tcp {
                 public:
@@ -293,8 +326,10 @@
                 ```
             </script>
             <aside class="notes">
-                Mot-clé: responsabilité de la variable
-                Exemple : send est une fonction multi thread asynchrone
+                <ul>
+                    <li>Mot-clé: responsabilité de la variable</li>
+                    <li>Exemple : send est une fonction multi thread asynchrone</li>
+                </ul>
             </aside>
         </section>
 
@@ -304,7 +339,10 @@
             <h3>"Il y a du typage partout ! </h3>
             <h3>Sans IDE c'est trop dur"</h3>
             <aside class="notes">
-                Parler du typage fort du C++
+                <ul>
+                    <li>Parler du typage fort du C++</li>
+                    <li>Mais : c'est un avantage</li>
+                </ul>
             </aside>
         </section>
 
@@ -325,10 +363,16 @@
                 ...
 
                 std::map<uint32_t, std::shared_ptr<server_tcp>>::iterator found = server_pool.find(42);
-                socket sock = found->second->sock;
+                socket s = found->second->sock;
                 ```
                 C'est un peu verbeux non ?
             </script>
+            <aside class="notes">
+                <ul>
+                    <li>... et pas très lisible</li>
+                    <li>Seul chose intéressante : récupérer la valeur sock</li>
+                </ul>
+            </aside>
         </section>
 
         <section data-markdown>
@@ -351,11 +395,15 @@
                 ...
 
                 server_tcp_by_id_type::iterator found = server_tcp_by_id.find(42);
-                socket sock = found->second->sock;
+                socket s = found->second->sock;
                 ```
             </script>
             <aside class="notes">
-                Dois je vraiement connaitre le type de la variable found ?
+                <ul>
+                    <li>Plus lisible mais encore verbeux</li>
+                    <li>Dois je vraiement connaitre le type de la variable found ?</li>
+                    <li>On connait le type de retour grace à la fonction membre find</li>
+                </ul>
             </aside>
         </section>
 
@@ -370,7 +418,7 @@
                     // ... 
                 };
 
-                typedef server_tcp_pool_type std::vector<std::shared_ptr<server_tcp>>;
+                typedef std::vector<std::shared_ptr<server_tcp>> server_tcp_pool_type;
                 using server_tcp_by_id_type = std::map<uint32_t, std::shared_ptr<server_tcp>>;
 
                 server_tcp_pool_type      server_tcp_pool;
@@ -381,10 +429,13 @@
                 auto found = server_tcp_by_id.find("toto");
                 auto sock = found->second->name;
                 ```
-                <aside class="notes">
-                    Le type de found est définis grace au type de retour de la la fonction find
-                </aside>
             </script>
+            <aside class="notes">
+                <ul>
+                    <li>Beaucoup plus simple</li>
+                    <li>En C++17, il peut être utilisé en paramètre de fonction</li>
+                </ul>
+            </aside>
         </section>
 
         <!-- Fonction lambda / haut niveau -->
@@ -397,92 +448,84 @@
             <script type="text/template">
                 Exemple : gestion des réponses
                 ```cpp
-                class response_interface {
+                class server_tcp {
                 public:
-                    virtual void process_response(const packet& pkt) = 0; 
+                    uint32_t    id;
+                    socket      sock;
+                    bool        closed;
+                    // ... 
                 };
 
-                class response_mngt
-                : public response_interface
+                using server_tcp_pool_type = std::vector<std::shared_ptr<server_tcp>>;
+                using server_list_type = std::list<std::shared_ptr<server_tcp>>;
+                server_tcp_pool_type      server_tcp_pool;
+
+                server_list_type closed_socket_list(server_tcp_pool_type& srv)
                 {
-                public:
-                    void process_response(const packet& pkt) override {
-                        check_request(pkt.id);
-                        process_data(pkt.data);
-                    }
-
-                public:
-                    void check_request(uint64_t id) { /* ...*/}
-
-                    template<typename Data>
-                    void process_data(Data& ) { /* ... */}
-                }
-
-                class server_tcp 
-                {
-                public:
-                    void send(packet&& pkt) { 
-                        /* send and receive response */
-                        rep_.process_response(resp);
-                    }
-
-                    void run() {
-                        while (!done()) {
-                            packet pkt;
-
-                            send(pkt);
+                    server_list_type result;
+                    for (size_t i = 0 ; i < srv.size() ; ++i) {
+                        if (srv[i].closed) {
+                            result.push_back(srv[i]);
                         }
                     }
+                    return result;
+                }
 
-                private:
-                    response_mngt rep_;
-                };
                 ```
             </script>
+            <aside class="notes">
+                <ul>
+                    <li>A l'ancienne : une boucle for et des indexes</li>
+                    <li>Contrainte forte sur le type de la structure en paramètre</li>
+                    <li>Utilisons les algorithmes, les iterateurs et les fonctions lambda</li>
+                </ul>
+            </aside>
         </section>
 
         <section data-markdown>
             <!-- Reflechir à un cas concret basé sur les callbacks -->
             <!--  Parler de la façon "traditionnelle" de faire des fonctions -->
             <script type="text/template">
-                ### Fonction lambda
-                ...ou comment se simplifer la vie
+                Avec des algorithmes, des itérateurs et des lambdas
                 ```cpp
-                class response_mngt
-                {
-                public:
-                    void check_request(uint64_t id) { /* ...*/}
-
-                    template<typename Data>
-                    void process_data(Data& ) { /* ... */}
-                }
-
-                using handle = std::function<void(const packet& )>;
-
                 class server_tcp {
                 public:
-                    void send(packet&& pkt, handle handle_response) { 
-                        /* send and receive response */
-                        handle_response(resp);
-                    }
-
-                    void run() {
-                        while (!done()) {
-                            packet pkt;
-
-                            auto response = [this](const packet& res) {
-                                rep_.check_response(res.id);
-                                rep_.process_data(res.data);
-                            };
-
-                            send(pkt, response);
-                        }
-                    }
-                private:
-                    response_mngt       rep_;
+                    uint32_t    id;
+                    socket      sock;
+                    bool        closed;
+                    // ... 
                 };
+
+                using server_tcp_pool_type = std::vector<std::shared_ptr<server_tcp>>;
+                using server_list_type = std::list<std::shared_ptr<server_tcp>>;
+                server_tcp_pool_type      server_tcp_pool;
+
+                template<typename Container>
+                server_list_type closed_socket_list(Container& c)
+                {
+                    server_list_type result;
+                    std::for_each(
+                        c.begin(), 
+                        c.end(), 
+                        [&result](const auto& s){
+                            if (s.closed) {
+                                result.push_back(s);
+                            }
+                        }
+                    );
+                    return result;
+                }
+
                 ```
             </script>
+            <aside class="notes">
+                <ul>
+                    <li>Avec le template : on peut utiliser n'importe quelle type de container</li>
+                    <li>L'algorithme for_each se base sur tout type de container qui implémente les iterateur</li>
+                    <li>Fonction lambda : les fonction anonymes du Java</li>
+                    <li>Fonction lambda : 3 parties contexte/paramètre/corp de fonction</li>
+                </ul>
+            </aside>
         </section>
 
         <section data-markdown>
@@ -574,7 +617,10 @@
         <section>
             <h3>Comment faire du C++ aujourd'hui ?</h3>
             <aside class="notes">
-                parler des problèmes de build - exemple avec Makefile et cmake
+                <ul>
+                    <li>Sondage : qui a utiliser Makefile ou cmake</li>
+                    <li>parler des problèmes de build - exemple avec Makefile et cmake</li>
+                </ul>
             </aside>
         </section>
 
@@ -584,7 +630,10 @@
                 <img class="plain" width="30%" height="30%" src="img/phoenix.png"/>
             </div>
             <aside class="notes">
-                POC mis en place pour concurrence le Go et mettre au gout du jour le C++
+                <ul>
+                    <li>POC mis en place pour concurrencer le Go et mettre au gout du jour le C++</li>
+                    <li>Utiliser la technologie C++ de manière moderne</li>
+                </ul>
             </aside>
         </section>
 
@@ -595,7 +644,7 @@
                 * Gérer un projet C++
                 * Gérer ses dépendances de build sans déclarations
                 * "Multi plateforme" -> Utilisation de docker
-                * Génération d'images utilisables dans un cloud
+                * Génération d'images docker utilisables dans un cloud
             </script>
         </section>
 
@@ -613,6 +662,13 @@
                 <img src="img/logo-debian.jpg" width="250px" style="margin-right: 41px;border: none;box-shadow: none;"/>
                 <img src="img/photo-docker.jpg" width="400px" style="border: none; box-shadow: none;"/>
             </div>
+            <aside class="notes">
+                <ul>
+                    <li>Une image docker spécifique par projet pour builder</li>
+                    <li>Scan et installation automatique via apt des dépendance de projets</li>
+                    <li>Génération d'une image docker directement utilisable</li>
+                </ul>
+            </aside>
         </section>
 
         <section data-markdown>
@@ -641,7 +697,12 @@
              Une arboresence
              ```bash
 my-project
+├── DEBS
+│   └── libcaffe.deb
 ├── sources
+│   ├── tests
+│   │   ├── check_server
+│   │   │   └── check_server.cpp
 │   ├── binaries
 │   │   ├── predicate
 │   │   │   └── main.cpp
@@ -857,32 +918,25 @@ my-project
 
     httpd srv;
     MPFD::Parser  part_parser;
-    part_parser.SetTempDirForFileUpload("/src/tmp");
+    part_parser.SetTempDirForFileUpload("/tmp");
 
     srv(POST) / "predict_from_file" = [&](const request& req, buffer& data, reply& rep) {
-        try {
-            auto content_type = req.h("Content-Type");
-            part_parser.SetContentType(content_type);
-            part_parser.AcceptSomeData(&(data[0]), data.size());
-            auto fields = part_parser.GetFieldsMap();
+        auto content_type = req.h("Content-Type");
+        part_parser.SetContentType(content_type);
+        part_parser.AcceptSomeData(&(data[0]), data.size());
+        auto file = part_parser.GetFieldsMap()[0];
        
-            for (const auto& f : fields)  {
-                if (f.second->GetType() == MPFD::Field::FileType) {
-                    auto result = classifier->classify(f.second->GetTempFileName());
-                    cxxu::rmfile(f.second->GetTempFileName());
-                    rep << 
-                        nx::json(result)
-                        ;
-                }
-            }
-        }
-        catch(MPFD::Exception& e)  {
-            std::cerr << "Exception parser: " << e.GetError() << std::endl;
+        if (file->GetType() == MPFD::Field::FileType) {
+            auto result = classifier->classify(file->GetTempFileName());
+            cxxu::rmfile(file->GetTempFileName());
+            rep << 
+                nx::json(result)
+                ;
         }
     };
 
+    cxxu::info() << "Serve at " << bind_addr << ":" << bind_port;
     srv(make_endpoint(bind_addr, bind_port));
-    std::cout << "Serve at " << bind_addr << ":" << bind_port << std::endl;
                 ```
             </script>
         </section>
