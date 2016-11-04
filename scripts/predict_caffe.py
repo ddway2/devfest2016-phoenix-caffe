@@ -72,7 +72,8 @@ def predict_from_file():
 	x   = net.predict([img]).tolist()[0]
 	x   = [ '%.2f' % elem for elem in x ]
 	ret = pd.DataFrame({'name':class_names, 'prediction':x}).sort_values('prediction',ascending=False).to_json(orient="records")
-	return json.dumps({"predictions":ret})
+	print(json.dumps({'predictions':json.loads(ret)}))
+	return (json.dumps({'predictions':json.loads(ret)}))
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
