@@ -861,12 +861,12 @@ my-project
 
         <section>
             <h3>Réseau neuronale convolutif</h3>
-            <img class="plain" height="500px" src = "img/cnn.png" alt = "cnn">
+            <img class="plain" height="500px" src = "img/pooling.png" alt = "cnn">
         </section>
 
         <section>
             <h3>Réseau neuronale convolutif</h3>
-            <img class="plain" height="500px" src = "img/pooling.png" alt = "cnn">
+            <img class="plain" height="750px" src = "img/CNN.png" alt = "cnn">
         </section>
 
         <section>
@@ -937,8 +937,7 @@ my-project
     part_parser.SetTempDirForFileUpload("/tmp");
 
     srv(POST) / "predict_from_file" = [&](const request& req, buffer& data, reply& rep) {
-        auto content_type = req.h("Content-Type");
-        part_parser.SetContentType(content_type);
+        part_parser.SetContentType(req.h("Content-Type"));
         part_parser.AcceptSomeData(&(data[0]), data.size());
         auto file = part_parser.GetFieldsMap()[0];
        
