@@ -163,13 +163,17 @@
             <h3>Idée reçue n°1 : <h3>
             <h3>"Il n'y a pas de Garbage Collector : il faut gérer soi-même la mémoire et les objets"</h3>
             <aside class="notes">
-                Notion de controle - rapport performance/responsabilité
+                <ul>
+                    <li>Notion de controle - rapport performance/responsabilité</li>
+                    <li>Partage des objets</li>
+                </ul>
             </aside>
         </section>
 
         <section data-markdown>
             <script type="text/template">
-                Un pool de serveurs TCP
+                ### Un pool de serveurs TCP
+                Comment gérer une instance partagée ?
                 ```cpp
                 class server_tcp {
                 public:
@@ -178,15 +182,13 @@
                     // ... 
                 };
 
-                
                 std::vector<server_tcp*>            server_tcp_pool;
-                std::map<uint32_t, server_tcp*>     server_tcp_by_id;
 
-                void new_server() {
+                server_tcp* new_server() {
                     server_tcp* srv = new server_tcp();
                     
                     server_tcp_pool.push_back(srv);
-                    server_tcp_by_id[srv->id] = srv; 
+                    return srv;
                 }
 
                 // ... Un peu de traitement
@@ -215,13 +217,12 @@
                 #include <memory>
 
                 std::vector<std::shared_ptr<server_tcp>>            server_tcp_pool;
-                std::map<uint32_t, std::shared_ptr<server_tcp>>     server_tcp_by_id;
 
-                void new_server() {
-                    server_tcp* srv =  std::make_shared<server_tcp>();
+                std::shared_ptr<server_tcp> new_server() {
+                    std::shared_ptr<server_tcp> srv =  std::make_shared<server_tcp>();
                     
                     server_tcp_pool.push_back(srv);
-                    server_tcp_by_id[srv->id] = srv; 
+                    return srv;
                 }
 
                 /// Live your life server TCP variable...
@@ -234,7 +235,7 @@
             <aside class="notes">
                 <ul>
                     <li>Comptage automatique des références d'une variable</li>
-                    <li>Variable dynamique : Ouvrir vers la gestion des variables (copie / valeur / move semantic)</li>
+                    <li>Passage de paramètre - comment l'optimiser ?</li>
                 </ul>
             </aside>
         </section>
@@ -265,12 +266,13 @@
                     }
                 };
                 ```
-                Une copie de 200000 octets... Ce n'est pas l'idéal
+                Une copie de 2'000'000 octets... Ce n'est pas l'idéal
             </script>
             <aside class="notes">
                 <ul>
+                    <li>C++ Passage par valeur: copie complète</li>
                     <li>Une grosse structure paquet à copier</li>
-                    <li>Passage par valeur: copie complète</li>
+                    <li>Utilisation du passage par référence</li>
                 </ul>
             </aside>
         </section>
@@ -298,7 +300,8 @@
             </script>
             <aside class="notes">
                 <ul>
-                    <li>Notion de scope d'une variable</li>
+                    <li>Durée de vie de la variable - utilisation d'un garbage collector</li>
+                    <li>Portée de la variable - Destruction avec risque de l'objet</li>
                 </ul>
             </aside>
         </section>
@@ -327,8 +330,8 @@
             </script>
             <aside class="notes">
                 <ul>
-                    <li>Mot-clé: responsabilité de la variable</li>
-                    <li>Exemple : send est une fonction multi thread asynchrone</li>
+                    <li>Passage du controle de la variable à la fonction send</li>
+                    <li>Analogie avec les enfants et la nounou</li>
                 </ul>
             </aside>
         </section>
@@ -386,7 +389,7 @@
                     // ... 
                 };
 
-                typedef server_tcp_pool_type std::vector<std::shared_ptr<server_tcp>>;
+                typedef  std::vector<std::shared_ptr<server_tcp>> server_tcp_pool_type;
                 using server_tcp_by_id_type = std::map<uint32_t, std::shared_ptr<server_tcp>>;
 
                 server_tcp_pool_type      server_tcp_pool;
@@ -432,6 +435,7 @@
             </script>
             <aside class="notes">
                 <ul>
+                    <li>Utilise les valeurs de retour d'une fonction pour déterminer le type</li>
                     <li>Beaucoup plus simple</li>
                     <li>En C++17, il peut être utilisé en paramètre de fonction</li>
                 </ul>
@@ -446,7 +450,7 @@
 
         <section data-markdown>
             <script type="text/template">
-                Exemple : gestion des réponses
+                Exemple : liste des instances server_tcp fermées
                 ```cpp
                 class server_tcp {
                 public:
@@ -483,8 +487,6 @@
         </section>
 
         <section data-markdown>
-            <!-- Reflechir à un cas concret basé sur les callbacks -->
-            <!--  Parler de la façon "traditionnelle" de faire des fonctions -->
             <script type="text/template">
                 Avec des algorithmes, des itérateurs et des lambdas
                 ```cpp
@@ -538,6 +540,11 @@
                 process_data(42, packet);       //  La réponse à la grande question sur la vie ?
                 ```
             </script>
+            <aside class="notes">
+                <ul>
+                    <li>Comment rendre cela plus "lisible"</li>
+                </ul>
+            </aside>
         </section>
 
         <section data-markdown>
@@ -567,6 +574,13 @@
                 }
                 ```
             </script>
+            <aside class="notes">
+                <ul>
+                    <li>Permet de créer des type à partir de literaux</li>
+                    <li>Fonctionne également avec des chaine de caractère</li>
+                    <li>on peut imaginer des parser json ou xml direct</li>
+                </ul>
+            </aside>
         </section>
 
         <!-- Librairies STL -->
@@ -598,8 +612,8 @@
             <script type="text/template">
                 ### Quelques exemples :
                 * Expandium NX - Librairie HTTP asynchrone
-                * Facebook Wangle - Librairie réseau
                 * Facebook Folly - Collection d'utilitaire
+                * nghttp2 - librairie HTTP/2
                 * Librairie Cloud (MapR)
                 * ...
             </script>
@@ -609,7 +623,9 @@
             <h3>Et ce n'est qu'un aperçu</h3>
             <img class="plain" src="img/C-11-CPP-11-features.png"/>
             <aside class="notes">
-                Ouvrir sur le sujet : commet faire du C++ aujourd'hui
+                <ul>
+                    <li>Ouvrir sur le sujet : commet faire du C++ aujourd'hui</li>
+                </ul>
             </aside>
         </section>
 
@@ -1076,6 +1092,7 @@ my-project
             <h2>Des questions ?</h2>
 
             <ul class="ulist">
+                <li><a href="https://github.com/ExpandiumSAS">https://github.com/ExpandiumSAS</a></li>
                 <li><a href="https://github.com/ddway2/devfest2016-phoenix-caffe">https://github.com/ddway2/devfest2016-phoenix-caffe</a></li>
                 <li><a href="https://github.com/ddway2/neo-phoenix">https://github.com/ddway2/neo-phoenix</a></li>
                 <li><a href="https://github.com/chybz/cbuild">https://github.com/chybz/cbuild</a></li>
