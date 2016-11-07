@@ -32,7 +32,7 @@ RUN mkdir /src && cd /src && \
     make install && \
     rm -rf /src
 
-RUN pip install flask
+RUN pip install flask && pip install flask_cors
 
 ADD . /scripts
 WORKDIR /scripts

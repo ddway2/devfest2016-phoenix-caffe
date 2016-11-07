@@ -16,7 +16,7 @@ app.config['UPLOAD_FOLDER'] = '/tmp/'
 CORS(app)
 cors = CORS(app, resources={r"*": {"origins": "*"}})
 
-caffe_root = '/usr/lib/caffe'
+caffe_root = '/usr'
 sys.path.insert(0, caffe_root + '/python')
 
 import caffe
@@ -76,4 +76,4 @@ def predict_from_file():
 	return (json.dumps({'predictions':json.loads(ret)}))
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0',port=8081)
