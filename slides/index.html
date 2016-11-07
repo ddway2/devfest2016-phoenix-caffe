@@ -248,8 +248,8 @@
                 class server_tcp {
                 public:
                     struct packet {
-                        uint64_t        id;
-                        uint8_t         data[2000000];        // Big packet
+                        uint64_t         id;
+                        std::vector<uint8_t> data(2000000);        // Big packet
                         // ...
                     };
                 public:
