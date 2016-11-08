@@ -199,14 +199,14 @@
                     server_tcp_pool.clear();
                 }
                 ```
-            </script>
-            <aside class="notes">
+                <aside class="notes" data-markdown="">
                 <ul>
                     <li>La lourdeur de devoir gérer les variables dynamiques</li>
                     <li>Risque d'erreur si la variable est détruite trop tot</li>
                     <li>Ouvrir sur : il ya une solution maintenant</li>
                 </ul>
-            </aside>
+                </aside>
+            </script>
         </section>
 
         <section data-markdown>
@@ -231,13 +231,13 @@
                     server_tcp_pool.clear();
                 }
                 ```
+                <aside class="notes">
+                    <ul>
+                        <li>Comptage automatique des références d'une variable</li>
+                        <li>Passage de paramètre - comment l'optimiser ?</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>Comptage automatique des références d'une variable</li>
-                    <li>Passage de paramètre - comment l'optimiser ?</li>
-                </ul>
-            </aside>
         </section>
 
 
@@ -267,14 +267,14 @@
                 };
                 ```
                 Une copie de 2'000'000 octets... Ce n'est pas l'idéal
+                <aside class="notes">
+                    <ul>
+                        <li>C++ Passage par valeur: copie complète</li>
+                        <li>Une grosse structure paquet à copier</li>
+                        <li>Utilisation du passage par référence</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>C++ Passage par valeur: copie complète</li>
-                    <li>Une grosse structure paquet à copier</li>
-                    <li>Utilisation du passage par référence</li>
-                </ul>
-            </aside>
         </section>
 
         <section data-markdown>
@@ -297,13 +297,13 @@
                 };
                 ```
                 Mais que ce passe-t-il si send est asynchrone ?
+                <aside class="notes">
+                    <ul>
+                        <li>Durée de vie de la variable - utilisation d'un garbage collector</li>
+                        <li>Portée de la variable - Destruction avec risque de l'objet</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>Durée de vie de la variable - utilisation d'un garbage collector</li>
-                    <li>Portée de la variable - Destruction avec risque de l'objet</li>
-                </ul>
-            </aside>
         </section>
 
         <section data-markdown>
@@ -327,13 +327,13 @@
                     }
                 };
                 ```
+                <aside class="notes">
+                    <ul>
+                        <li>Passage du controle de la variable à la fonction send</li>
+                        <li>Analogie avec les enfants et la nounou</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>Passage du controle de la variable à la fonction send</li>
-                    <li>Analogie avec les enfants et la nounou</li>
-                </ul>
-            </aside>
         </section>
 
         <!-- Mot clé auto -->
@@ -369,13 +369,13 @@
                 socket s = found->second->sock;
                 ```
                 C'est un peu verbeux non ?
+                <aside class="notes">
+                    <ul>
+                        <li>... et pas très lisible</li>
+                        <li>Seul chose intéressante : récupérer la valeur sock</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>... et pas très lisible</li>
-                    <li>Seul chose intéressante : récupérer la valeur sock</li>
-                </ul>
-            </aside>
         </section>
 
         <section data-markdown>
@@ -400,14 +400,13 @@
                 server_tcp_by_id_type::iterator found = server_tcp_by_id.find(42);
                 socket s = found->second->sock;
                 ```
+                <aside class="notes">
+                    <ul>
+                        <li>Dois je vraiement connaitre le type de la variable found ?</li>
+                        <li>On connait le type de retour grace à la fonction membre find</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>Plus lisible mais encore verbeux</li>
-                    <li>Dois je vraiement connaitre le type de la variable found ?</li>
-                    <li>On connait le type de retour grace à la fonction membre find</li>
-                </ul>
-            </aside>
         </section>
 
         <section data-markdown>
@@ -432,14 +431,14 @@
                 auto found = server_tcp_by_id.find("toto");
                 auto sock = found->second->name;
                 ```
+                <aside class="notes">
+                    <ul>
+                        <li>Utilise les valeurs de retour d'une fonction pour déterminer le type</li>
+                        <li>Beaucoup plus simple</li>
+                        <li>En C++17, il peut être utilisé en paramètre de fonction</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>Utilise les valeurs de retour d'une fonction pour déterminer le type</li>
-                    <li>Beaucoup plus simple</li>
-                    <li>En C++17, il peut être utilisé en paramètre de fonction</li>
-                </ul>
-            </aside>
         </section>
 
         <!-- Fonction lambda / haut niveau -->
@@ -476,14 +475,14 @@
                 }
 
                 ```
+                <aside class="notes">
+                    <ul>
+                        <li>A l'ancienne : une boucle for et des indexes</li>
+                        <li>Contrainte forte sur le type de la structure en paramètre</li>
+                        <li>Utilisons les algorithmes, les iterateurs et les fonctions lambda</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>A l'ancienne : une boucle for et des indexes</li>
-                    <li>Contrainte forte sur le type de la structure en paramètre</li>
-                    <li>Utilisons les algorithmes, les iterateurs et les fonctions lambda</li>
-                </ul>
-            </aside>
         </section>
 
         <section data-markdown>
@@ -519,15 +518,15 @@
                 }
 
                 ```
+                <aside class="notes">
+                    <ul>
+                        <li>Avec le template : on peut utiliser n'importe quelle type de container</li>
+                        <li>L'algorithme for_each se base sur tout type de container qui implémente les iterateur</li>
+                        <li>Fonction lambda : les fonction anonymes du Java</li>
+                        <li>Fonction lambda : 3 parties contexte/paramètre/corp de fonction</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>Avec le template : on peut utiliser n'importe quelle type de container</li>
-                    <li>L'algorithme for_each se base sur tout type de container qui implémente les iterateur</li>
-                    <li>Fonction lambda : les fonction anonymes du Java</li>
-                    <li>Fonction lambda : 3 parties contexte/paramètre/corp de fonction</li>
-                </ul>
-            </aside>
         </section>
 
         <section data-markdown>
@@ -539,12 +538,12 @@
 
                 process_data(42, packet);       //  La réponse à la grande question sur la vie ?
                 ```
+                <aside class="notes">
+                    <ul>
+                        <li>Comment rendre cela plus "lisible"</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>Comment rendre cela plus "lisible"</li>
-                </ul>
-            </aside>
         </section>
 
         <section data-markdown>
@@ -573,14 +572,14 @@
                     return result;
                 }
                 ```
+                <aside class="notes">
+                    <ul>
+                        <li>Permet de créer des type à partir de literaux</li>
+                        <li>Fonctionne également avec des chaine de caractère</li>
+                        <li>on peut imaginer des parser json ou xml direct</li>
+                    </ul>
+                </aside>
             </script>
-            <aside class="notes">
-                <ul>
-                    <li>Permet de créer des type à partir de literaux</li>
-                    <li>Fonctionne également avec des chaine de caractère</li>
-                    <li>on peut imaginer des parser json ou xml direct</li>
-                </ul>
-            </aside>
         </section>
 
         <!-- Librairies STL -->
