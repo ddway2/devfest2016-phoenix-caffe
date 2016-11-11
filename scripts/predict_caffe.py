@@ -73,7 +73,7 @@ def predict_from_file():
 	x   = [ '%.2f' % elem for elem in x ]
 	ret = pd.DataFrame({'name':class_names, 'prediction':x}).sort_values('prediction',ascending=False).to_json(orient="records")
 	print(json.dumps({'predictions':json.loads(ret)}))
-	return (json.dumps({'predictions':json.loads(ret)}))
+	return Response(json.dumps({'predictions':json.loads(ret)}), mimetype="application/json")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0',port=8081)
